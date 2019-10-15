@@ -16,13 +16,6 @@ public class NetworkManager : MonoBehaviour
     string HOST = "localhost";
     int PORT = 8080;
 
-    public void Start()
-    {
-        setupSocket();
-        writeSocket("test");
-        Debug.Log($"Response: {readSocket()}");
-    }
-
     public bool setupSocket() 
     {
         try {

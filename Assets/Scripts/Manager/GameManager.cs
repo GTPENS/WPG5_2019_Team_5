@@ -11,12 +11,16 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        Data data = new Data("join");
+        string jsonString = JsonUtility.ToJson(data);
+        Debug.Log($"data: {data.command} json: {jsonString}");
+
         network = GetComponent<NetworkManager>();
 
         if (network.setupSocket())
         {
             Debug.Log("Connecting to Server");
-            network.writeSocket("test");
+            network.writeSocket(jsonString);
 
             Debug.Log($"Return from Server: {network.readSocket()}");
         }
@@ -24,5 +28,6 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Server is not Running");
         }
+    
     }
 }

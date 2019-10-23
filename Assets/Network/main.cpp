@@ -8,8 +8,17 @@ int random(int min, int max)
 
 void onRequest(Game *game, char *buffer)
 {
-	Player player(random(1111, 9999));
-	game->addPlayer(player);
+	Json::Value root;
+    Json::Reader reader;
+    bool parsed = reader.parse(buffer, root);
+
+	if (!parsed) return;
+
+	if (root["command"] == "join")
+	{
+		Player player(random(1111, 9999));
+		game->addPlayer(player);
+	}
 }
 
 int main(int argc, char const *argv[]) 

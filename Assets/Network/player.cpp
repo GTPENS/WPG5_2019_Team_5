@@ -36,3 +36,13 @@ void Player::reduceGold(int gold)
 {
     this->gold -= gold;
 }
+
+Json::Value Player::toArray()
+{
+    Json::Value value;
+    value["id"] = this->id;
+    value["turn"] = this->turn;
+    value["gold"] = this->gold;
+    
+    return value;
+}

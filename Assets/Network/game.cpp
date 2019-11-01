@@ -4,7 +4,7 @@
 
 Game::Game()
 {
-    
+    this->index = 0;
 }
 
 void Game::run(void (*onRequest) (Game *, char *))
@@ -37,19 +37,22 @@ void Game::run(void (*onRequest) (Game *, char *))
 	cout << "The Server is running on port " << PORT << endl;
 
 	if (listen(server_fd, 3) < 0) 
-	{ 
-		perror("listen"); 
-		exit(EXIT_FAILURE); 
+	{
+		perror("listen");
+		exit(EXIT_FAILURE);
 	}
 
 	if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0) 
 	{ 
-		perror("accept"); 
-		exit(EXIT_FAILURE); 
+		perror("accept");
+		exit(EXIT_FAILURE);
 	}
 
-	valread = read( new_socket , buffer, 1024); 
-	onRequest(this, buffer);
+	while(true)
+	{
+		valread = recv( new_socket, buffer, sizeof(buffer), 0);
+		onRequest(this, buffer);
+	}
 }
 
 void Game::addPlayer(Player player)
@@ -57,8 +60,11 @@ void Game::addPlayer(Player player)
 	playerList.push_back(player);
 	cout << "* Add Player with id " << player.getId() << endl;
 
-	char const *success = "Player Successfully Connected";
-	send(new_socket, success, strlen(success), 0);
-	
-	// cout << playerList.at(0).getGold() << endl;
+	Json::FastWriter fastwriter;
+
+	Data data(true, 0, player.getId(), playerList);;
+	string jsonData = fastwriter.write(data.toArray());
+
+	char const *converted = jsonData.c_str();
+	send(new_socket, converted, strlen(converted), 0);
 }

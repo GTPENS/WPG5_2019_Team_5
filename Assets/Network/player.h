@@ -1,5 +1,7 @@
 #pragma once
 
+#include <jsoncpp/json/json.h>
+
 class Player
 {
     public:
@@ -11,6 +13,8 @@ class Player
         int getGold();
         void addGold(int gold);
         void reduceGold(int gold);
+
+        Json::Value toArray();
 
     private:
         int id;

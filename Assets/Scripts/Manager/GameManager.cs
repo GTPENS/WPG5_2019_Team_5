@@ -8,26 +8,39 @@ public class GameManager : MonoBehaviour
     public GameObject bidText;
 
     NetworkManager network;
+    bool isServerOn;
 
     void Start()
     {
         Data data = new Data("join");
         string jsonString = JsonUtility.ToJson(data);
-        Debug.Log($"data: {data.command} json: {jsonString}");
 
         network = GetComponent<NetworkManager>();
+        isServerOn = network.setupSocket();
 
-        if (network.setupSocket())
+        if (isServerOn)
         {
             Debug.Log("Connecting to Server");
+            Debug.Log($"Send {jsonString} to Server");
+            
             network.writeSocket(jsonString);
-
-            Debug.Log($"Return from Server: {network.readSocket()}");
+            Debug.Log($"Receive {network.readSocket()} from Server");
         }
         else
         {
             Debug.Log("Server is not Running");
         }
-    
     }
+
+    // void Update()
+    // {
+    //     if (isServerOn && Input.GetKeyDown(KeyCode.Space))
+    //     {
+    //         Data data = new Data("join");
+    //         string jsonString = JsonUtility.ToJson(data);
+
+    //         network.writeSocket(jsonString);
+    //         Debug.Log($"Return from Server: {network.readSocket()}");
+    //     }
+    // }
 }

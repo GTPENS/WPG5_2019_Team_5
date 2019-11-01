@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <jsoncpp/json/json.h>
+#include "data.h"
 #include "player.h"
 
 using namespace std;
@@ -17,6 +18,8 @@ class Game
 {
     public:
         Game();
+
+        int index;
         
         void run(void (*) (Game *, char *));
         void addPlayer(Player);

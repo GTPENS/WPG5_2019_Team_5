@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System.Net.Sockets;
 using System;
+using System.Text;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -48,7 +49,12 @@ public class NetworkManager : MonoBehaviour
             return "";
         
         if (theStream.DataAvailable)
-            return theReader.ReadLine();
+        {
+            byte[] buffer = new byte[mySocket.ReceiveBufferSize];
+            theStream.Read(buffer, 0, mySocket.ReceiveBufferSize);
+
+            return Encoding.UTF8.GetString(buffer, 0, buffer.Length);
+        }
         
         return "";
     }

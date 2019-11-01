@@ -1,11 +1,5 @@
 #include "game.h"
 
-int random(int min, int max)
-{
-	srand(time(NULL));
-	return min + (rand() % ( max - min + 1 ));
-}
-
 void onRequest(Game *game, char *buffer)
 {
 	Json::Value root;
@@ -16,13 +10,16 @@ void onRequest(Game *game, char *buffer)
 
 	if (root["command"] == "join")
 	{
-		Player player(random(1111, 9999));
+		Player player(game->index);
 		game->addPlayer(player);
+		game->index++;
 	}
 }
 
 int main(int argc, char const *argv[]) 
-{ 
+{
+	srand(time(NULL));
+	
 	Game game;
 	game.run(onRequest);
 }

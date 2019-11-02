@@ -1,16 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public GameObject sliderObject;
     public GameObject bidText;
+    public GameObject bidButton;
 
     NetworkManager network;
     bool isServerOn;
+    int playerId;
 
     void Start()
+    {
+        bidButton.GetComponent<Button>().onClick.AddListener(onClickBid);
+
+        onJoinGame();
+    }
+
+    void onJoinGame()
     {
         Data data = new Data("join");
         string jsonString = JsonUtility.ToJson(data);
@@ -24,7 +34,12 @@ public class GameManager : MonoBehaviour
             Debug.Log($"Send {jsonString} to Server");
             
             network.writeSocket(jsonString);
-            Debug.Log($"Receive {network.readSocket()} from Server");
+
+            string result = network.readSocket();
+            Debug.Log($"Receive {result} from Server");
+
+            Data dataResult = JsonUtility.FromJson<Data>(result);
+            playerId = dataResult.playerId;
         }
         else
         {
@@ -32,15 +47,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // void Update()
-    // {
-    //     if (isServerOn && Input.GetKeyDown(KeyCode.Space))
-    //     {
-    //         Data data = new Data("join");
-    //         string jsonString = JsonUtility.ToJson(data);
+    void onClickBid()
+    {
+        Data data = new Data("bid");
+        data.playerId = playerId;
+        data.bidValue = 2000;
 
-    //         network.writeSocket(jsonString);
-    //         Debug.Log($"Return from Server: {network.readSocket()}");
-    //     }
-    // }
+        string jsonString = JsonUtility.ToJson(data);
+
+        network.writeSocket(jsonString);
+        string result = network.readSocket();
+
+        Data dataResult = JsonUtility.FromJson<Data>(result);
+        Debug.Log($"data: {dataResult.command}");
+    }
 }

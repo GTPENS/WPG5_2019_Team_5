@@ -55,16 +55,30 @@ void Game::run(void (*onRequest) (Game *, char *))
 	}
 }
 
+void Game::sendBack(Data data)
+{
+	Json::FastWriter fastwriter;
+	string jsonData = fastwriter.write(data.toArray());
+
+	char const *converted = jsonData.c_str();
+	int result = send(new_socket, converted, strlen(converted), 0);
+
+	if (result == -1)
+		cout << "* Send Feedback to Client Failed" << endl;
+}
+
 void Game::addPlayer(Player player)
 {
 	playerList.push_back(player);
 	cout << "* Add Player with id " << player.getId() << endl;
 
-	Json::FastWriter fastwriter;
+	Data data(true, "bid", player.getId(), playerList);
+	this->sendBack(data);
+}
 
-	Data data(true, 0, player.getId(), playerList);;
-	string jsonData = fastwriter.write(data.toArray());
-
-	char const *converted = jsonData.c_str();
-	send(new_socket, converted, strlen(converted), 0);
+void Game::doBid(int playerId, int bidValue)
+{
+	cout << "* Player " << playerId << " bid " << bidValue << " gold" << endl;
+	Data data(true, "play", playerId, playerList);
+	this->sendBack(data);
 }

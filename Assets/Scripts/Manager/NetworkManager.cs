@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.Sockets;
 using System;
 using System.Text;
+using System.Threading;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -46,17 +47,19 @@ public class NetworkManager : MonoBehaviour
     public string readSocket() 
     {
         if (!socketReady)
-            return "";
+            return "notready";
+
+        Thread.Sleep(100);
         
         if (theStream.DataAvailable)
         {
-            byte[] buffer = new byte[mySocket.ReceiveBufferSize];
-            theStream.Read(buffer, 0, mySocket.ReceiveBufferSize);
-
-            return Encoding.UTF8.GetString(buffer, 0, buffer.Length);
+            char[] buffer = new char[mySocket.ReceiveBufferSize];
+            theReader.Read(buffer, 0, mySocket.ReceiveBufferSize);
+        
+            return new string(buffer);
         }
         
-        return "";
+        return "notavailable";
     }
 
     public void closeSocket() 

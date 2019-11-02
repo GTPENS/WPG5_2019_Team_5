@@ -14,6 +14,10 @@ void onRequest(Game *game, char *buffer)
 		game->addPlayer(player);
 		game->index++;
 	}
+	else if (root["command"] == "bid") 
+	{
+		game->doBid(root["playerId"].asUInt(), root["bidValue"].asUInt());
+	}
 }
 
 int main(int argc, char const *argv[]) 

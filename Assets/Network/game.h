@@ -22,7 +22,9 @@ class Game
         int index;
         
         void run(void (*) (Game *, char *));
+        void sendBack(Data);
         void addPlayer(Player);
+        void doBid(int, int);
 
     private:
         int server_fd, new_socket, valread;

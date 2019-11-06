@@ -1,11 +1,14 @@
 #pragma once
 
-#include <unistd.h>
-#include <stdio.h>
+#include <sys/types.h>
 #include <sys/socket.h>
-#include <stdlib.h>
 #include <netinet/in.h>
+#include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <pthread.h>
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -23,20 +26,19 @@ class Game
 
         int index;
         
-        void run(void (*) (Game *, char *));
-        void sendBack(Data);
-        void addPlayer(Player);
-        void doBid(int, int);
+        void run(void (*) (Game *, char *, int));
+        void addPlayer(Player, int);
+        void doBid(int, int, int);
         void updatePosition();
 
     private:
-        int server_fd, new_socket, valread;
-        struct sockaddr_in address;
-        int opt = 1;
-        int addrlen = sizeof(address);
-        char buffer[1024] = {0};
-        char const *hello = "Hello from server";
+        int my_sock, their_sock, len;
+        char ip[INET_ADDRSTRLEN], msg[500];
 
+        struct sockaddr_in my_addr, their_addr;
+        socklen_t their_addr_size;
+        pthread_t sendt, recvt;
+        
         vector<Player> playerList;
         vector<Bid> bidList;
 };

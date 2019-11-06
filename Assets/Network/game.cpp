@@ -1,78 +1,146 @@
 #include "game.h"
-
 #define PORT 8080 
+
+struct client_info {
+	Game *context;
+	void (*onRequest) (Game *, char *, int);
+
+	int sockno;
+	char ip[INET_ADDRSTRLEN];
+};
+
+int clients[100], n = 0;
+
+struct client_info cl;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+// =============== Server Created by Rahmat Ansori ===============
 
 Game::Game()
 {
     this->index = 0;
 }
 
-void Game::run(void (*onRequest) (Game *, char *))
+void sendToAll(Data data, int current)
 {
-    // Creating socket file descriptor 
-	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
-	{ 
-		perror("socket failed"); 
-		exit(EXIT_FAILURE); 
-	} 
-	
-	// Forcefully attaching socket to the port 8080 
-	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) 
-	{ 
-		perror("setsockopt"); 
-		exit(EXIT_FAILURE); 
-	}
+	pthread_mutex_lock(&mutex);
 
-	address.sin_family = AF_INET; 
-	address.sin_addr.s_addr = INADDR_ANY; 
-	address.sin_port = htons(PORT);
-	
-	// Forcefully attaching socket to the port 8080 
-	if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) 
-	{ 
-		perror("bind failed"); 
-		exit(EXIT_FAILURE); 
-	}
-
-	cout << "The Server is running on port " << PORT << endl;
-
-	if (listen(server_fd, 3) < 0) 
-	{
-		perror("listen");
-		exit(EXIT_FAILURE);
-	}
-
-	if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0) 
-	{ 
-		perror("accept");
-		exit(EXIT_FAILURE);
-	}
-
-	while(true)
-	{
-		valread = recv( new_socket, buffer, sizeof(buffer), 0);
-
-		if (valread != -1) {
-			onRequest(this, buffer);
-		}
-	}
-}
-
-void Game::sendBack(Data data)
-{
 	Json::FastWriter fastwriter;
 	string jsonData = fastwriter.write(data.toArray());
 
 	char const *converted = jsonData.c_str();
-	
-	int result = send(new_socket, converted, strlen(converted), 0);
-	delete converted;
 
-	if (result == -1)
-		cout << "* Send Feedback to Client Failed" << endl;
+	for (int i = 0; i < n; i++) {
+		if (clients[i] != current) 
+		{
+			if (send(clients[i], converted, strlen(converted), 0) < 0) 
+			{
+				perror("Sending Failed");
+				continue;
+			}
+		}
+	}
+
+	pthread_mutex_unlock(&mutex);
 }
 
-void Game::addPlayer(Player player)
+void sendBack(Data data, int current)
+{
+	pthread_mutex_lock(&mutex);
+
+	Json::FastWriter fastwriter;
+	string jsonData = fastwriter.write(data.toArray());
+
+	char const *converted = jsonData.c_str();
+
+	if (send(current, converted, strlen(converted), 0) < 0) 
+	{
+		perror("Sending Failed");
+	}
+
+	pthread_mutex_unlock(&mutex);
+}
+
+void filterSend(char *message, client_info info)
+{
+	int current = info.sockno;
+	info.onRequest(info.context, message, current);
+}
+
+void *receive(void *sock)
+{
+	struct client_info cl = *((struct client_info *) sock);
+	char message[500];
+	int len, j;
+
+	while ((len = recv(cl.sockno, message, 500, 0)) > 0) 
+	{
+		message[len] = '\0';
+		filterSend(message, cl);
+		memset(message, '\0', sizeof(message));
+	}
+
+	pthread_mutex_lock(&mutex);
+	printf("%s Disconnected\n", cl.ip);
+	
+	for (int i = 0; i < n; i++) {
+		if (clients[i] == cl.sockno) {
+			j = i;
+			while (j < n-1) {
+				clients[j] = clients[j+1];
+				j++;
+			}
+		}
+	}
+
+	n--;
+	pthread_mutex_unlock(&mutex);
+}
+
+void Game::run(void (*onRequest) (Game *, char *, int))
+{
+	my_sock = socket(AF_INET,SOCK_STREAM, 0);
+	memset(my_addr.sin_zero, '\0', sizeof(my_addr.sin_zero));
+	
+	my_addr.sin_family = AF_INET;
+	my_addr.sin_addr.s_addr = INADDR_ANY;
+	my_addr.sin_port = htons(PORT);
+	their_addr_size = sizeof(their_addr);
+
+	if (bind(my_sock, (struct sockaddr *) &my_addr, sizeof(my_addr)) != 0) {
+		perror("Binding Failed");
+		exit(1);
+	}
+
+	if (listen(my_sock, 5) != 0) {
+		perror("Listening Failed");
+		exit(1);
+	}
+
+	while (true) 
+	{
+		if ((their_sock = accept(my_sock, (struct sockaddr *) &their_addr, &their_addr_size)) < 0) {
+			perror("Accept Failed");
+			exit(1);
+		}
+
+		pthread_mutex_lock(&mutex);
+		inet_ntop(AF_INET, (struct sockaddr *) &their_addr, ip, INET_ADDRSTRLEN);
+		printf("%s Connected\n", ip);
+
+		cl.context = this;
+		cl.onRequest = onRequest;
+		cl.sockno = their_sock;
+		strcpy(cl.ip, ip);
+		clients[n] = their_sock;
+		n++;
+		
+		pthread_create(&recvt, NULL, receive, &cl);
+		pthread_mutex_unlock(&mutex);
+	}
+}
+
+void Game::addPlayer(Player player, int target)
 {
 	playerList.push_back(player);
 	cout << "* Add Player with id " << player.getId() << endl;
@@ -80,7 +148,7 @@ void Game::addPlayer(Player player)
 	Data data("bid", playerList);
 	data.setPlayerId( player.getId());
 
-	this->sendBack(data);
+	sendBack(data, target);
 }
 
 bool compare(Bid data1, Bid data2) 
@@ -88,7 +156,7 @@ bool compare(Bid data1, Bid data2)
     return (data1.getValue() > data2.getValue()); 
 }
 
-void Game::doBid(int playerId, int bidValue)
+void Game::doBid(int playerId, int bidValue, int target)
 {
 	cout << "* Player " << playerId << " bid " << bidValue << " gold" << endl;
 	bidList.push_back(Bid(playerId, bidValue));
@@ -97,7 +165,7 @@ void Game::doBid(int playerId, int bidValue)
 	updatePosition();
 
 	Data data("play", playerList);
-	this->sendBack(data);
+	sendBack(data, target);
 }
 
 void Game::updatePosition()

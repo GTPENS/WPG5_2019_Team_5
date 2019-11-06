@@ -1,10 +1,10 @@
 #include "game.h"
 
-void onRequest(Game *game, char *buffer)
+void onRequest(Game *game, char *message, int target)
 {
 	Json::Value root;
     Json::Reader reader;
-    bool parsed = reader.parse(buffer, root);
+    bool parsed = reader.parse(message, root);
 
 	if (!parsed) return;
 	cout << root << endl;
@@ -12,12 +12,12 @@ void onRequest(Game *game, char *buffer)
 	if (root["command"] == "join")
 	{
 		Player player(game->index);
-		game->addPlayer(player);
+		game->addPlayer(player, target);
 		game->index++;
 	}
 	else if (root["command"] == "bid") 
 	{
-		game->doBid(root["playerId"].asUInt(), root["bidValue"].asUInt());
+		game->doBid(root["playerId"].asUInt(), root["bidValue"].asUInt(), target);
 	}
 }
 

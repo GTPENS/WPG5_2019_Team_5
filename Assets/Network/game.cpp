@@ -25,7 +25,7 @@ void Game::run(void (*onRequest) (Game *, char *))
 
 	address.sin_family = AF_INET; 
 	address.sin_addr.s_addr = INADDR_ANY; 
-	address.sin_port = htons( PORT ); 
+	address.sin_port = htons(PORT);
 	
 	// Forcefully attaching socket to the port 8080 
 	if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) 
@@ -51,7 +51,10 @@ void Game::run(void (*onRequest) (Game *, char *))
 	while(true)
 	{
 		valread = recv( new_socket, buffer, sizeof(buffer), 0);
-		onRequest(this, buffer);
+
+		if (valread != -1) {
+			onRequest(this, buffer);
+		}
 	}
 }
 
@@ -61,7 +64,9 @@ void Game::sendBack(Data data)
 	string jsonData = fastwriter.write(data.toArray());
 
 	char const *converted = jsonData.c_str();
+	
 	int result = send(new_socket, converted, strlen(converted), 0);
+	delete converted;
 
 	if (result == -1)
 		cout << "* Send Feedback to Client Failed" << endl;
@@ -72,13 +77,43 @@ void Game::addPlayer(Player player)
 	playerList.push_back(player);
 	cout << "* Add Player with id " << player.getId() << endl;
 
-	Data data(true, "bid", player.getId(), playerList);
+	Data data("bid", playerList);
+	data.setPlayerId( player.getId());
+
 	this->sendBack(data);
+}
+
+bool compare(Bid data1, Bid data2) 
+{ 
+    return (data1.getValue() > data2.getValue()); 
 }
 
 void Game::doBid(int playerId, int bidValue)
 {
 	cout << "* Player " << playerId << " bid " << bidValue << " gold" << endl;
-	Data data(true, "play", playerId, playerList);
+	bidList.push_back(Bid(playerId, bidValue));
+	
+	sort(bidList.begin(), bidList.end(), compare);
+	updatePosition();
+
+	Data data("play", playerList);
 	this->sendBack(data);
+}
+
+void Game::updatePosition()
+{
+	for (int i = 0; i < bidList.size(); i++)
+	{
+		Bid bid = bidList[i];
+
+		for (int j = 0; j < playerList.size(); j++)
+		{
+			if (playerList[j].getId() == bid.getId()) {
+				playerList[j].setTurn(i);
+			}
+		}
+
+		cout << "* Bidding Phase Complete" << endl;
+		cout << "    => Turn " << i << " is Player " << bid.getId() << endl;
+	}
 }

@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
         network.writeSocket(jsonString);
         string result = network.readSocket();
 
+        Debug.Log($"Receive {result} from Server");
         Data dataResult = JsonUtility.FromJson<Data>(result);
-        Debug.Log($"data: {dataResult.command}");
     }
 }

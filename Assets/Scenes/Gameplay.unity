@@ -713,6 +713,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sliderObject: {fileID: 442227967}
   bidText: {fileID: 1624155482}
+  bidButton: {fileID: 1098242542}
 --- !u!4 &971179801
 Transform:
   m_ObjectHideFlags: 0

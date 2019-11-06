@@ -9,15 +9,16 @@ using namespace std;
 class Data
 {
     public:
-        Data(bool, string, int, vector<Player>);
+        Data(string, vector<Player>);
 
+        int getPlayerId();
+        void setPlayerId(int);
         int getTimer();
         void setTimer(int);
 
         Json::Value toArray();
 
     private:
-        bool status;
         string command;
         int playerId;
         int timer;

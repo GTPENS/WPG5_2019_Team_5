@@ -8,9 +8,11 @@
 #include <string.h>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <jsoncpp/json/json.h>
 #include "data.h"
 #include "player.h"
+#include "bid.h"
 
 using namespace std;
 
@@ -25,6 +27,7 @@ class Game
         void sendBack(Data);
         void addPlayer(Player);
         void doBid(int, int);
+        void updatePosition();
 
     private:
         int server_fd, new_socket, valread;
@@ -35,4 +38,5 @@ class Game
         char const *hello = "Hello from server";
 
         vector<Player> playerList;
+        vector<Bid> bidList;
 };

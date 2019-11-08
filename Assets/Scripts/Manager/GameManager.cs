@@ -4,54 +4,70 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
-{
-    public GameObject sliderObject;
-    public GameObject bidText;
-    public GameObject bidButton;
+{   
+    [SerializeField] GameObject mainCanvas;
+    [SerializeField] GameObject menuCanvas;
+    [SerializeField] GameObject bidCanvas;
+    [SerializeField] GameObject playCanvas;
+    [SerializeField] GameObject goldText;
+
+    MenuManager menuManager;
+    BidManager bidManager;
 
     NetworkManager network;
     bool isServerOn;
-    int playerId;
+    Player player;
+    List<Player> playerList;
+
+    void Awake()
+    {
+        network = GetComponent<NetworkManager>();
+        player = new Player();
+    }
 
     void Start()
     {
-        bidButton.GetComponent<Button>().onClick.AddListener(onClickBid);
+        menuManager = menuCanvas.GetComponent<MenuManager>();
+        menuManager.setManager(this);
 
-        onJoinGame();
+        bidManager = bidCanvas.GetComponent<BidManager>();
+        bidManager.setManager(this);
     }
 
-    void onJoinGame()
+    public Player getPlayer()
+    {
+        return player;
+    }
+
+    public void joinGame()
     {
         Data data = new Data("join");
         string jsonString = JsonUtility.ToJson(data);
-
-        network = GetComponent<NetworkManager>();
         isServerOn = network.setupSocket();
 
-        if (isServerOn)
-        {
-            Debug.Log("Connecting to Server");
-            Debug.Log($"Send {jsonString} to Server");
-            
-            network.writeSocket(jsonString);
-
-            string result = network.readSocket();
-            Debug.Log($"Receive {result} from Server");
-
-            Data dataResult = JsonUtility.FromJson<Data>(result);
-            playerId = dataResult.playerId;
-        }
-        else
-        {
+        if (!isServerOn) {
             Debug.Log("Server is not Running");
+            return;
         }
+
+        Debug.Log("Connecting to Server");
+        Debug.Log($"Send {jsonString} to Server");
+            
+        network.writeSocket(jsonString);
+
+        string result = network.readSocket();
+        Debug.Log($"Receive {result} from Server");
+        filterData(result);
     }
 
-    void onClickBid()
+    public void doBidding(int bidValue)
     {
         Data data = new Data("bid");
-        data.playerId = playerId;
-        data.bidValue = 2000;
+        data.playerId = player.id;
+        data.bidValue = bidValue;
+        
+        player.gold -= bidValue;
+        updateGold();
 
         string jsonString = JsonUtility.ToJson(data);
 
@@ -59,6 +75,32 @@ public class GameManager : MonoBehaviour
         string result = network.readSocket();
 
         Debug.Log($"Receive {result} from Server");
-        Data dataResult = JsonUtility.FromJson<Data>(result);
+        filterData(result);
+    }
+
+    void filterData(string result)
+    {
+        Data data = JsonUtility.FromJson<Data>(result);
+        
+        switch (data.command)
+        {
+            case "bid":
+                player.id = data.playerId;
+                playerList = data.playerList;
+
+                menuCanvas.SetActive(false);
+                mainCanvas.SetActive(true);
+                bidCanvas.SetActive(true);
+                break;
+            case "play":
+                bidCanvas.SetActive(false);
+                playCanvas.SetActive(true);
+                break;
+        }
+    }
+
+    void updateGold()
+    {
+        goldText.GetComponent<Text>().text = player.gold.ToString();
     }
 }

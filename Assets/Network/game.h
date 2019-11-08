@@ -26,13 +26,14 @@ class Game
 
         int index;
         
+        void setMaxPlayer(int);
         void run(void (*) (Game *, char *, int));
         void addPlayer(Player, int);
         void doBid(int, int, int);
         void updatePosition();
 
     private:
-        int my_sock, their_sock, len;
+        int my_sock, their_sock, len, max_player;
         char ip[INET_ADDRSTRLEN], msg[500];
 
         struct sockaddr_in my_addr, their_addr;

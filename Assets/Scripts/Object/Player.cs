@@ -4,10 +4,8 @@ public class Player
     public int gold;
     public int turn;
 
-    public Player(int id, int gold, int turn)
+    public Player()
     {
-        this.id = id;
-        this.gold = gold;
-        this.turn = turn;
+        this.gold = 2000;
     }
 }

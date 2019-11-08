@@ -7,7 +7,7 @@ void onRequest(Game *game, char *message, int target)
     bool parsed = reader.parse(message, root);
 
 	if (!parsed) return;
-	cout << root << endl;
+	// cout << root << endl;
 
 	if (root["command"] == "join")
 	{
@@ -21,10 +21,11 @@ void onRequest(Game *game, char *message, int target)
 	}
 }
 
-int main(int argc, char const *argv[]) 
+int main(int argc, char *argv[]) 
 {
 	srand(time(NULL));
 	
 	Game game;
+	game.setMaxPlayer(argc > 1 ? atoi(argv[1]) : 4);
 	game.run(onRequest);
 }

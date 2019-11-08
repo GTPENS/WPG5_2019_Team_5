@@ -1,5 +1,6 @@
 #include "game.h"
 #define PORT 8080 
+#define TO_ALL -1
 
 struct client_info {
 	Game *context;
@@ -19,9 +20,18 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 Game::Game()
 {
     this->index = 0;
+	this->max_player = 4;
+
+	cout << "* Initialize Game" << endl;
 }
 
-void sendToAll(Data data, int current)
+void Game::setMaxPlayer(int max)
+{
+	this->max_player = max;
+	cout << "* Max Player set to " << max_player << endl;
+}
+
+void sendToAll(Data data, int current = TO_ALL)
 {
 	pthread_mutex_lock(&mutex);
 
@@ -31,13 +41,12 @@ void sendToAll(Data data, int current)
 	char const *converted = jsonData.c_str();
 
 	for (int i = 0; i < n; i++) {
-		if (clients[i] != current) 
+		if (current != TO_ALL && clients[i] == current) continue;
+
+		if (send(clients[i], converted, strlen(converted), 0) < 0) 
 		{
-			if (send(clients[i], converted, strlen(converted), 0) < 0) 
-			{
-				perror("Sending Failed");
-				continue;
-			}
+			perror("Sending Failed");
+			continue;
 		}
 	}
 
@@ -81,7 +90,7 @@ void *receive(void *sock)
 	}
 
 	pthread_mutex_lock(&mutex);
-	printf("%s Disconnected\n", cl.ip);
+	// printf("* Client with ip %s is Disconnected\n", cl.ip);
 	
 	for (int i = 0; i < n; i++) {
 		if (clients[i] == cl.sockno) {
@@ -126,7 +135,7 @@ void Game::run(void (*onRequest) (Game *, char *, int))
 
 		pthread_mutex_lock(&mutex);
 		inet_ntop(AF_INET, (struct sockaddr *) &their_addr, ip, INET_ADDRSTRLEN);
-		printf("%s Connected\n", ip);
+		// printf("* Client with ip %s is Connected\n", ip);
 
 		cl.context = this;
 		cl.onRequest = onRequest;
@@ -145,10 +154,21 @@ void Game::addPlayer(Player player, int target)
 	playerList.push_back(player);
 	cout << "* Add Player with id " << player.getId() << endl;
 
-	Data data("bid", playerList);
-	data.setPlayerId( player.getId());
+	if (playerList.size() < max_player) {
+		cout << "* Waiting other player" << endl;
 
-	sendBack(data, target);
+		Data data("wait", playerList);
+		data.setPlayerId(player.getId());
+		sendBack(data, target);
+	}
+	else
+	{
+		cout << "* Max Player Reached, Game will Start" << endl;
+
+		Data data("bid", playerList);
+		data.setTimer(10);
+		sendToAll(data, TO_ALL);
+	}
 }
 
 bool compare(Bid data1, Bid data2) 
@@ -162,6 +182,9 @@ void Game::doBid(int playerId, int bidValue, int target)
 	bidList.push_back(Bid(playerId, bidValue));
 	
 	sort(bidList.begin(), bidList.end(), compare);
+
+	if (bidList.size() != playerList.size()) return;
+	
 	updatePosition();
 
 	Data data("play", playerList);
@@ -182,6 +205,7 @@ void Game::updatePosition()
 		}
 
 		cout << "* Bidding Phase Complete" << endl;
-		cout << "    => Turn " << i << " is Player " << bid.getId() << endl;
+		cout << "    * Turn " << (i + 1) << " => Player " 
+			<< bid.getId() << endl;
 	}
 }

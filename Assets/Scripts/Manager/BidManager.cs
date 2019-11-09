@@ -12,6 +12,7 @@ public class BidManager : MonoBehaviour
 
     GameManager manager;
     Slider slider;
+    int timer;
     int value;
 
     void Start()
@@ -22,11 +23,18 @@ public class BidManager : MonoBehaviour
         slider.onValueChanged.AddListener(onValueChanged);
 
         value = (int) ((slider.value / 100f) * manager.getPlayer().gold);
+
+        StartCoroutine(startTimer());
     }
 
     public void setManager(GameManager manager)
     {
         this.manager = manager;
+    }
+
+    public void setTimer(int timer)
+    {
+        this.timer = timer;
     }
 
     private void onValueChanged(float value)
@@ -35,6 +43,12 @@ public class BidManager : MonoBehaviour
         this.value = (int) ((value / 100f) * playerGold);
 
         bidText.GetComponent<Text>().text = this.value.ToString();
+    }
+
+    IEnumerator startTimer()
+    {
+        yield return new WaitForSeconds(timer);
+        onClickBid();
     }
 
     void onClickBid()

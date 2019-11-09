@@ -1,6 +1,10 @@
 #pragma once
 
+#include <vector>
+#include "card.h"
 #include <jsoncpp/json/json.h>
+
+using namespace std;
 
 class Player
 {
@@ -20,4 +24,6 @@ class Player
         int id;
         int turn;
         int gold;
+
+        vector<Card> cardList;
 };

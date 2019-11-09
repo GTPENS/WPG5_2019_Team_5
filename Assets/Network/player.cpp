@@ -43,6 +43,11 @@ Json::Value Player::toArray()
     value["id"] = this->id;
     value["turn"] = this->turn;
     value["gold"] = this->gold;
+
+    for (int i = 0; i < this->cardList.size(); i++)
+    {
+        value["cardList"][i] = this->cardList[i].toArray();
+    }
     
     return value;
 }

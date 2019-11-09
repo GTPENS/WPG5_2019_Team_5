@@ -7,6 +7,7 @@ public class Data
     public string datetime;
     public int playerId;
     public int bidValue;
+    public int timer;
     public List<Player> playerList;
 
     public Data(string command)

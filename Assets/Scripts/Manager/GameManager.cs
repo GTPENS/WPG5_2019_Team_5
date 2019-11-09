@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject mainCanvas;
     [SerializeField] GameObject menuCanvas;
     [SerializeField] GameObject bidCanvas;
-    [SerializeField] GameObject playCanvas;
+    [SerializeField] GameObject collectCanvas;
     [SerializeField] GameObject goldText;
 
     MenuManager menuManager;
@@ -88,13 +88,16 @@ public class GameManager : MonoBehaviour
                 player.id = data.playerId;
                 playerList = data.playerList;
 
+                bidManager.setTimer(data.timer);
+
                 menuCanvas.SetActive(false);
                 mainCanvas.SetActive(true);
                 bidCanvas.SetActive(true);
                 break;
-            case "play":
+
+            case "collect":
                 bidCanvas.SetActive(false);
-                playCanvas.SetActive(true);
+                collectCanvas.SetActive(true);
                 break;
         }
     }

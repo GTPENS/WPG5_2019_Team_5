@@ -30,6 +30,7 @@ class Game
         void run(void (*) (Game *, char *, int));
         void addPlayer(Player, int);
         void doBid(int, int, int);
+        void populateCards(Data *);
         void updatePosition();
 
     private:

@@ -813,7 +813,7 @@ GameObject:
   - component: {fileID: 714541007}
   - component: {fileID: 714541006}
   m_Layer: 5
-  m_Name: PlayCanvas
+  m_Name: CollectCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1108,7 +1108,7 @@ MonoBehaviour:
   mainCanvas: {fileID: 938959635}
   menuCanvas: {fileID: 308793105}
   bidCanvas: {fileID: 1516767113}
-  playCanvas: {fileID: 714541005}
+  collectCanvas: {fileID: 714541005}
   goldText: {fileID: 1521726288}
 --- !u!4 &971179801
 Transform:

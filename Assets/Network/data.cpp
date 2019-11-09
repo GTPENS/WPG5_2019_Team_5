@@ -33,6 +33,11 @@ void Data::setTimer(int timer)
     this->timer = timer;
 }
 
+void Data::addCard(Card card)
+{
+    cardPool.push_back(card);
+}
+
 Json::Value Data::toArray()
 {
     Json::Value value;
@@ -42,6 +47,11 @@ Json::Value Data::toArray()
     for (int i = 0; i < this->playerList.size(); i++)
     {
         value["playerList"][i] = this->playerList[i].toArray();
+    }
+
+    for (int i = 0; i < this->cardPool.size(); i++)
+    {
+        value["cardPool"][i] = this->cardPool[i].toArray();
     }
     
     return value;

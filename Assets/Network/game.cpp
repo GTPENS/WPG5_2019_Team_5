@@ -1,4 +1,5 @@
 #include "game.h"
+
 #define PORT 8080 
 #define TO_ALL -1
 
@@ -163,7 +164,7 @@ void Game::addPlayer(Player player, int target)
 	}
 	else
 	{
-		cout << "* Max Player Reached, Game will Start" << endl;
+		cout << "* Max Player Reached, Game Start Now" << endl;
 
 		Data data("bid", playerList);
 		data.setTimer(10);
@@ -183,12 +184,30 @@ void Game::doBid(int playerId, int bidValue, int target)
 	
 	sort(bidList.begin(), bidList.end(), compare);
 
-	if (bidList.size() != playerList.size()) return;
-	
-	updatePosition();
+	if (bidList.size() != playerList.size()) 
+	{
+		cout << "* Waiting other player" << endl;
 
-	Data data("play", playerList);
-	sendBack(data, target);
+		Data data("wait", playerList);
+		sendBack(data, target);
+	}
+	else 
+	{
+		updatePosition();
+			
+		Data data("collect", playerList);
+
+		populateCards(&data);
+		sendToAll(data, TO_ALL);
+	}
+}
+
+void Game::populateCards(Data *data)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		data->addCard(Card(Card::getRandomType()));
+	}
 }
 
 void Game::updatePosition()

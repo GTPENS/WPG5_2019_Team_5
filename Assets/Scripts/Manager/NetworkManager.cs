@@ -75,7 +75,7 @@ public class NetworkManager : MonoBehaviour
  
     public void maintainConnection() 
     {
-        if(!theStream.CanRead) {
+        if (!theStream.CanRead) {
             setupSocket();
         }
     }

@@ -193,7 +193,7 @@ void Game::doBid(int playerId, int bidValue, int target)
 	}
 	else 
 	{
-		updatePosition();
+		sortBid();
 			
 		Data data("collect", playerList);
 
@@ -210,8 +210,10 @@ void Game::populateCards(Data *data)
 	}
 }
 
-void Game::updatePosition()
+void Game::sortBid()
 {
+	cout << "* Bidding Phase Complete" << endl;
+
 	for (int i = 0; i < bidList.size(); i++)
 	{
 		Bid bid = bidList[i];
@@ -223,7 +225,6 @@ void Game::updatePosition()
 			}
 		}
 
-		cout << "* Bidding Phase Complete" << endl;
 		cout << "    * Turn " << (i + 1) << " => Player " 
 			<< bid.getId() << endl;
 	}

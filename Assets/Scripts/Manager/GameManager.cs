@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
 
     MenuManager menuManager;
     BidManager bidManager;
+    CollectManager collectManager;
 
     NetworkManager network;
     bool isServerOn;
@@ -32,6 +33,9 @@ public class GameManager : MonoBehaviour
 
         bidManager = bidCanvas.GetComponent<BidManager>();
         bidManager.setManager(this);
+
+        collectManager = collectCanvas.GetComponent<CollectManager>();
+        collectManager.setManager(this);
     }
 
     public Player getPlayer()
@@ -96,6 +100,8 @@ public class GameManager : MonoBehaviour
                 break;
 
             case "collect":
+                collectManager.setCards(data.cardPool);
+
                 bidCanvas.SetActive(false);
                 collectCanvas.SetActive(true);
                 break;

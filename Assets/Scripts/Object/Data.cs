@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+[System.Serializable]
 public class Data
 {
     public string command;
@@ -9,6 +10,7 @@ public class Data
     public int bidValue;
     public int timer;
     public List<Player> playerList;
+    public List<Card> cardPool;
 
     public Data(string command)
     {

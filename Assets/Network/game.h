@@ -31,7 +31,7 @@ class Game
         void addPlayer(Player, int);
         void doBid(int, int, int);
         void populateCards(Data *);
-        void updatePosition();
+        void sortBid();
 
     private:
         int my_sock, their_sock, len, max_player;

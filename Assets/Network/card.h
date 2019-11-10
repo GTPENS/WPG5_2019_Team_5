@@ -5,8 +5,8 @@
 class Card
 {
     public:
-        Card(char const *);
-        Card(char const *, bool, char const *);
+        Card(int, char const *);
+        Card(int, char const *, bool, char const *);
 
         static char const *getRandomType();
         static char const *getRandomSpell();
@@ -14,6 +14,7 @@ class Card
         Json::Value toArray();
 
     private:
+        int id;
         char const *type;
         bool special;
         char const *spell;

@@ -37,6 +37,11 @@ void Player::reduceGold(int gold)
     this->gold -= gold;
 }
 
+void Player::addCard(Card card)
+{
+    cardList.push_back(card);
+}
+
 Json::Value Player::toArray()
 {
     Json::Value value;

@@ -5,14 +5,16 @@ int random(int min, int max)
   return min + (rand() % ( max - min + 1 ));
 }
 
-Card::Card(char const *type)
+Card::Card(int id, char const *type)
 {
+    this->id = id;
     this->type = type;
     this->special = false;
 }
 
-Card::Card(char const *type, bool special, char const *spell)
+Card::Card(int id, char const *type, bool special, char const *spell)
 {
+    this->id = id;
     this->type = type;
     this->special = special;
     this->spell = spell;
@@ -37,6 +39,7 @@ char const *Card::getRandomSpell()
 Json::Value Card::toArray()
 {
     Json::Value value;
+    value["id"] = this->id;
     value["type"] = this->type;
     value["special"] = this->special;
 

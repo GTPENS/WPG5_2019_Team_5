@@ -32,9 +32,10 @@ class Game
         void doBid(int, int, int);
         void populateCards(Data *);
         void sortBid();
+        void doSelect(int, int, int);
 
     private:
-        int my_sock, their_sock, len, max_player;
+        int my_sock, their_sock, len, maxPlayer, cardIndex;
         char ip[INET_ADDRSTRLEN], msg[500];
 
         struct sockaddr_in my_addr, their_addr;

@@ -11,6 +11,7 @@ public class Data
     public int timer;
     public List<Player> playerList;
     public List<Card> cardPool;
+    public int cardId;
 
     public Data(string command)
     {

@@ -21,15 +21,16 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 Game::Game()
 {
     this->index = 0;
-	this->max_player = 4;
+	this->maxPlayer = 4;
+	this->cardIndex = 0;
 
 	cout << "* Initialize Game" << endl;
 }
 
 void Game::setMaxPlayer(int max)
 {
-	this->max_player = max;
-	cout << "* Max Player set to " << max_player << endl;
+	this->maxPlayer = max;
+	cout << "* Max Player set to " << maxPlayer << endl;
 }
 
 void sendToAll(Data data, int current = TO_ALL)
@@ -155,7 +156,7 @@ void Game::addPlayer(Player player, int target)
 	playerList.push_back(player);
 	cout << "* Add Player with id " << player.getId() << endl;
 
-	if (playerList.size() < max_player) {
+	if (playerList.size() < maxPlayer) {
 		cout << "* Waiting other player" << endl;
 
 		Data data("wait", playerList);
@@ -206,7 +207,8 @@ void Game::populateCards(Data *data)
 {
 	for (int i = 0; i < 4; i++)
 	{
-		data->addCard(Card(Card::getRandomType()));
+		data->addCard(Card(cardIndex, Card::getRandomType()));
+		cardIndex++;
 	}
 }
 
@@ -227,5 +229,26 @@ void Game::sortBid()
 
 		cout << "    * Turn " << (i + 1) << " => Player " 
 			<< bid.getId() << endl;
+	}
+}
+
+void Game::doSelect(int playerId, int cardId, int target)
+{
+	cout << "* Player" << playerId << " Select Card" << endl;
+
+	// Do remove card from cardPool
+	// Do add card to player cardList
+	// Do change turn
+
+	for (int i = 0; i < bidList.size(); i++)
+	{
+		if (bidList[i].getId() != cardId) continue;
+
+		for (int j = 0; j < playerList.size(); j++)
+		{
+			if (playerList[j].getId() == playerId) {
+				playerList[j].setTurn(i);
+			}
+		}
 	}
 }

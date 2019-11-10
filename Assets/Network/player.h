@@ -13,10 +13,11 @@ class Player
         
         int getId();
         int getTurn();
-        void setTurn(int turn);
+        void setTurn(int);
         int getGold();
-        void addGold(int gold);
-        void reduceGold(int gold);
+        void addGold(int);
+        void reduceGold(int);
+        void addCard(Card);
 
         Json::Value toArray();
 

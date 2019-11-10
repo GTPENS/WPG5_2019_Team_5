@@ -82,6 +82,21 @@ public class GameManager : MonoBehaviour
         filterData(result);
     }
 
+    public void doSelect(Card card)
+    {
+        Data data = new Data("select");
+        data.playerId = player.id;
+        data.cardId = card.id;
+
+        string jsonString = JsonUtility.ToJson(data);
+
+        network.writeSocket(jsonString);
+        string result = network.readSocket();
+
+        Debug.Log($"Receive {result} from Server");
+        filterData(result);
+    }
+
     void filterData(string result)
     {
         Data data = JsonUtility.FromJson<Data>(result);
@@ -104,6 +119,9 @@ public class GameManager : MonoBehaviour
 
                 bidCanvas.SetActive(false);
                 collectCanvas.SetActive(true);
+                break;
+
+            case "select":
                 break;
         }
     }

@@ -19,6 +19,10 @@ void onRequest(Game *game, char *message, int target)
 	{
 		game->doBid(root["playerId"].asUInt(), root["bidValue"].asUInt(), target);
 	}
+	else if (root["command"] == "select") 
+	{
+		game->doSelect(root["playerId"].asUInt(), root["cardId"].asUInt(), target);
+	}
 }
 
 int main(int argc, char *argv[]) 

@@ -21,6 +21,10 @@ public class CollectManager : MonoBehaviour
                 new Vector2(), Quaternion.identity);
             cardObject.transform.SetParent(cardGrid.transform, false);
             cardObject.transform.localScale = Vector3.one;
+
+            CardHandler handler = cardObject.GetComponent<CardHandler>();
+            handler.setManager(manager);
+            handler.setCardData(card);
         }
     }
 

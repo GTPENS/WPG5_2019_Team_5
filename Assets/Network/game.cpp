@@ -22,6 +22,7 @@ Game::Game()
 {
     this->index = 0;
 	this->maxPlayer = 4;
+	this->turnIndex = 0;
 	this->cardIndex = 0;
 
 	cout << "* Initialize Game" << endl;
@@ -207,9 +208,11 @@ void Game::populateCards(Data *data)
 {
 	for (int i = 0; i < 4; i++)
 	{
-		data->addCard(Card(cardIndex, Card::getRandomType()));
+		randomCards.push_back(Card(cardIndex, Card::getRandomType()));
 		cardIndex++;
 	}
+	
+	data->setCards(randomCards);
 }
 
 void Game::sortBid()
@@ -234,21 +237,32 @@ void Game::sortBid()
 
 void Game::doSelect(int playerId, int cardId, int target)
 {
-	cout << "* Player" << playerId << " Select Card" << endl;
+	cout << "* Player " << playerId << " Select Card " << cardId << endl;
 
 	// Do remove card from cardPool
 	// Do add card to player cardList
 	// Do change turn
 
-	for (int i = 0; i < bidList.size(); i++)
+	for (int i = 0; i < randomCards.size(); i++)
 	{
-		if (bidList[i].getId() != cardId) continue;
+		if (randomCards[i].getId() != cardId) continue;
 
 		for (int j = 0; j < playerList.size(); j++)
 		{
 			if (playerList[j].getId() == playerId) {
-				playerList[j].setTurn(i);
+				playerList[j].addCard(randomCards[i]);
+				randomCards.erase(randomCards.begin() + i);
+				turnIndex++;
+				break;
 			}
 		}
 	}
+
+	if (turnIndex + 1 >= playerList.size())
+		turnIndex = 0;
+
+	Data data("collect", playerList);
+	data.setCards(randomCards);
+	data.setTurn(turnIndex);
+	sendToAll(data, TO_ALL);
 }

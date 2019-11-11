@@ -8,6 +8,8 @@ class Card
         Card(int, char const *);
         Card(int, char const *, bool, char const *);
 
+        int getId();
+
         static char const *getRandomType();
         static char const *getRandomSpell();
 

@@ -11,6 +11,7 @@ Data::Data(string command, vector<Player> playerList)
 
     this->playerId = 0;
     this->timer = 0;
+    this->turnIndex = 0;
 }
 
 int Data::getPlayerId()
@@ -33,9 +34,19 @@ void Data::setTimer(int timer)
     this->timer = timer;
 }
 
-void Data::addCard(Card card)
+int Data::getTurn()
 {
-    cardPool.push_back(card);
+    return this->turnIndex;
+}
+
+void Data::setTurn(int turnIndex)
+{
+    this->turnIndex = turnIndex;
+}
+
+void Data::setCards(vector<Card> cards)
+{
+    cardPool = cards;
 }
 
 Json::Value Data::toArray()
@@ -43,6 +54,7 @@ Json::Value Data::toArray()
     Json::Value value;
     value["command"] = this->command;
     value["timer"] = this->timer;
+    value["turnIndex"] = this->turnIndex;
 
     for (int i = 0; i < this->playerList.size(); i++)
     {

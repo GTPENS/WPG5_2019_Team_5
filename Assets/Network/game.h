@@ -35,7 +35,7 @@ class Game
         void doSelect(int, int, int);
 
     private:
-        int my_sock, their_sock, len, maxPlayer, cardIndex;
+        int my_sock, their_sock, len, maxPlayer, turnIndex, cardIndex;
         char ip[INET_ADDRSTRLEN], msg[500];
 
         struct sockaddr_in my_addr, their_addr;
@@ -44,4 +44,5 @@ class Game
         
         vector<Player> playerList;
         vector<Bid> bidList;
+        vector<Card> randomCards;
 };

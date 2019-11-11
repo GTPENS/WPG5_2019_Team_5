@@ -20,6 +20,11 @@ Card::Card(int id, char const *type, bool special, char const *spell)
     this->spell = spell;
 }
 
+int Card::getId()
+{
+    return this->id;
+}
+
 char const *Card::getRandomType()
 {
     char const *Type[] = {"Marine", "Finance", "Commerce", "Agriculture"};

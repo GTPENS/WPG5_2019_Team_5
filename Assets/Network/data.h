@@ -16,7 +16,9 @@ class Data
         void setPlayerId(int);
         int getTimer();
         void setTimer(int);
-        void addCard(Card);
+        int getTurn();
+        void setTurn(int);
+        void setCards(vector<Card>);
 
         Json::Value toArray();
 
@@ -24,6 +26,7 @@ class Data
         string command;
         int playerId;
         int timer;
+        int turnIndex;
 
         vector<Player> playerList;
         vector<Card> cardPool;

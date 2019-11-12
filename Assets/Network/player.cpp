@@ -42,6 +42,16 @@ void Player::addCard(Card card)
     cardList.push_back(card);
 }
 
+int Player::getCardTotal()
+{
+    return cardList.size();
+}
+
+Card Player::getCard(int index)
+{
+    return cardList[index];
+}
+
 Json::Value Player::toArray()
 {
     Json::Value value;

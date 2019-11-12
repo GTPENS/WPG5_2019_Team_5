@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject menuCanvas;
     [SerializeField] GameObject bidCanvas;
     [SerializeField] GameObject collectCanvas;
+    [SerializeField] GameObject actionCanvas;
+    [SerializeField] GameObject sellCanvas;
     [SerializeField] GameObject goldText;
 
     MenuManager menuManager;
@@ -121,7 +123,15 @@ public class GameManager : MonoBehaviour
                 collectCanvas.SetActive(true);
                 break;
 
-            case "select":
+            case "action":
+                collectCanvas.SetActive(false);
+                actionCanvas.SetActive(true);
+                break;
+
+            case "sell":
+                collectCanvas.SetActive(false);
+                actionCanvas.SetActive(false);
+                sellCanvas.SetActive(true);
                 break;
         }
     }

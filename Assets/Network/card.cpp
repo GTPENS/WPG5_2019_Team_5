@@ -25,6 +25,16 @@ int Card::getId()
     return this->id;
 }
 
+bool Card::isSpecial()
+{
+    return this->special;
+}
+
+char const *Card::getSpell()
+{
+    return this->spell;
+}
+
 char const *Card::getRandomType()
 {
     char const *Type[] = {"Marine", "Finance", "Commerce", "Agriculture"};

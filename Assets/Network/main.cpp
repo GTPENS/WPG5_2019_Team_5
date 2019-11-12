@@ -7,7 +7,6 @@ void onRequest(Game *game, char *message, int target)
     bool parsed = reader.parse(message, root);
 
 	if (!parsed) return;
-	// cout << root << endl;
 
 	if (root["command"] == "join")
 	{

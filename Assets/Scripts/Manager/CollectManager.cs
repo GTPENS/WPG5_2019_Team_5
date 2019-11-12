@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CollectManager : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class CollectManager : MonoBehaviour
 
     GameManager manager;
     List<Card> cardPool;
+    List<GameObject> cardObjects;
+    int timer;
 
     void Start()
     {   
@@ -25,7 +28,10 @@ public class CollectManager : MonoBehaviour
             CardHandler handler = cardObject.GetComponent<CardHandler>();
             handler.setManager(manager);
             handler.setCardData(card);
+            cardObjects.Add(cardObject);
         }
+
+        StartCoroutine(startTimer());
     }
 
     public void setManager(GameManager manager)
@@ -38,6 +44,11 @@ public class CollectManager : MonoBehaviour
         this.cardPool = cardPool;
     }
 
+    public void setTimer(int timer)
+    {
+        this.timer = timer;
+    }
+
     int getCardIndex(string type)
     {
         switch (type)
@@ -48,5 +59,19 @@ public class CollectManager : MonoBehaviour
             case "Agriculture": return 3;
             default: return -1;
         }
+    }
+
+    IEnumerator startTimer()
+    {
+        yield return new WaitForSeconds(timer);
+        randomClick();
+    }
+
+    void randomClick()
+    {
+        int random = Random.Range(0, cardObjects.Count - 1);
+        
+        cardObjects[random].GetComponent<CardHandler>().onCardClick();
+        cardObjects.RemoveAt(random);
     }
 }

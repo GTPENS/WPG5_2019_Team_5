@@ -154,8 +154,13 @@ void Game::run(void (*onRequest) (Game *, char *, int))
 
 void Game::addPlayer(Player player, int target)
 {
+	if (!firstJoin) {
+		cout << "* Waiting for players to join" << endl;
+		firstJoin = true;
+	}
+
+	cout << "    * Add Player with id " << player.getId() << endl;
 	playerList.push_back(player);
-	cout << "* Add Player with id " << player.getId() << endl;
 
 	if (playerList.size() < maxPlayer) {
 		cout << "* Waiting other player" << endl;
@@ -166,7 +171,7 @@ void Game::addPlayer(Player player, int target)
 	}
 	else
 	{
-		cout << "* Max Player Reached, Game Start Now" << endl;
+		cout << "* Max Player Reached, the Game Starts" << endl << endl;
 
 		Data data("bid", playerList);
 		data.setTimer(10);
@@ -181,7 +186,12 @@ bool compare(Bid data1, Bid data2)
 
 void Game::doBid(int playerId, int bidValue, int target)
 {
-	cout << "* Player " << playerId << " bid " << bidValue << " gold" << endl;
+	if (!firstBid) {
+		cout << "* Bidding Phase" << endl;
+		firstBid = true;
+	}
+	
+	cout << "    * Player " << playerId << " => " << bidValue << " gold" << endl;
 	bidList.push_back(Bid(playerId, bidValue));
 	
 	sort(bidList.begin(), bidList.end(), compare);
@@ -198,6 +208,7 @@ void Game::doBid(int playerId, int bidValue, int target)
 		sortBid();
 			
 		Data data("collect", playerList);
+		data.setTimer(10);
 
 		populateCards(&data);
 		sendToAll(data, TO_ALL);
@@ -237,7 +248,12 @@ void Game::sortBid()
 
 void Game::doSelect(int playerId, int cardId, int target)
 {
-	cout << "* Player " << playerId << " Select Card " << cardId << endl;
+	if (!firstCollect) {
+		cout << "* Collect Phase" << endl;
+		firstCollect = true;
+	}
+	
+	cout << "    * Player " << playerId << " => Card " << cardId << endl;
 
 	// Do remove card from cardPool
 	// Do add card to player cardList
@@ -264,5 +280,51 @@ void Game::doSelect(int playerId, int cardId, int target)
 	Data data("collect", playerList);
 	data.setCards(randomCards);
 	data.setTurn(turnIndex);
+	
 	sendToAll(data, TO_ALL);
+
+	if (randomCards.size() <= 0)
+		action();
+}
+
+void Game::action()
+{
+	bool isFound;
+
+	// player with null special card will skip
+	// player with special card can skip this phase
+
+	for (int i = 0; i < playerList.size(); i++)
+	{
+		if (isFound)
+			break;
+
+		for (int j = 0; j < playerList[i].getCardTotal(); j++)
+		{
+			Card card = playerList[i].getCard(j);
+
+			if (card.isSpecial()) {
+				turnIndex = i;
+				isFound = true;
+				break;
+			}
+		}
+	}
+
+	if (isFound)
+	{
+		cout << "* Action Phase" << endl;
+		
+		Data data("action", playerList);
+		data.setTurn(turnIndex);
+
+		sendToAll(data, TO_ALL);
+	}
+	else
+	{
+		cout << "* Player with Special Card not Found, Action Phase Skipped" << endl;
+
+		Data data("sell", playerList);
+		sendToAll(data, TO_ALL);
+	}
 }

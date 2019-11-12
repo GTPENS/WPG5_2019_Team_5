@@ -9,6 +9,8 @@ class Card
         Card(int, char const *, bool, char const *);
 
         int getId();
+        bool isSpecial();
+        char const *getSpell();
 
         static char const *getRandomType();
         static char const *getRandomSpell();

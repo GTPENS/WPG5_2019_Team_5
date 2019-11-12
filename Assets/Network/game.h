@@ -33,10 +33,12 @@ class Game
         void populateCards(Data *);
         void sortBid();
         void doSelect(int, int, int);
+        void action();
 
     private:
         int my_sock, their_sock, len, maxPlayer, turnIndex, cardIndex;
-        char ip[INET_ADDRSTRLEN], msg[500];
+        char ip[INET_ADDRSTRLEN];
+        bool firstJoin, firstBid, firstCollect;
 
         struct sockaddr_in my_addr, their_addr;
         socklen_t their_addr_size;

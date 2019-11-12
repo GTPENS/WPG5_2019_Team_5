@@ -23,7 +23,7 @@ public class CardHandler : MonoBehaviour
         this.card = card;
     }
 
-    void onCardClick()
+    public void onCardClick()
     {
         manager.doSelect(card);
         Destroy(gameObject);

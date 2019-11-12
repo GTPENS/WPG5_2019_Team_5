@@ -18,6 +18,8 @@ class Player
         void addGold(int);
         void reduceGold(int);
         void addCard(Card);
+        int getCardTotal();
+        Card getCard(int);
 
         Json::Value toArray();
 

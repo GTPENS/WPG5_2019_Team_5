@@ -6,25 +6,36 @@ using UnityEngine.UI;
 
 public class BidManager : MonoBehaviour
 {
+    [SerializeField] GameObject timerTextObject;
     [SerializeField] GameObject sliderObject;
     [SerializeField] GameObject bidText;
     [SerializeField] GameObject bidButtonObject;
 
     GameManager manager;
     Slider slider;
-    int timer;
-    int value;
+    Button button;
+    Text timerText, bidButtonText;
+    Coroutine coroutine;
+    int timer, value;
 
     void Start()
     {
-        bidButtonObject.GetComponent<Button>().onClick.AddListener(onClickBid);
+        timerText = timerTextObject.GetComponent<Text>();
+
+        button = bidButtonObject.GetComponent<Button>();
+        button.interactable = true;
+        button.onClick.AddListener(onClickBid);
+
+        bidButtonText = bidButtonObject.GetComponentInChildren<Text>();
+        bidButtonText.text = "Bid";
 
         slider = sliderObject.GetComponent<Slider>();
         slider.onValueChanged.AddListener(onValueChanged);
 
         value = (int) ((slider.value / 100f) * manager.getPlayer().gold);
 
-        StartCoroutine(startTimer());
+        timerText.text = timer.ToString();
+        coroutine = StartCoroutine(startTimer());
     }
 
     public void setManager(GameManager manager)
@@ -47,12 +58,26 @@ public class BidManager : MonoBehaviour
 
     IEnumerator startTimer()
     {
-        yield return new WaitForSeconds(timer);
-        onClickBid();
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+            timer -= 1;
+            timerText.text = timer.ToString();
+
+            if (timer <= 0)
+            {
+                onClickBid();
+                break;
+            }
+        }
     }
 
     void onClickBid()
     {
+        StopCoroutine(coroutine);
+
         manager.doBidding(this.value);
+        bidButtonText.text = "Waiting other Player";
+        button.GetComponent<Button>().interactable = false;
     }
 }

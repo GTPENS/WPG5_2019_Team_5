@@ -279,6 +279,7 @@ void Game::doSelect(int playerId, int cardId, int target)
 
 	Data data("collect", playerList);
 	data.setCards(randomCards);
+	data.setTimer(10);
 	data.setTurn(turnIndex);
 	
 	sendToAll(data, TO_ALL);

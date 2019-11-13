@@ -117,7 +117,9 @@ public class GameManager : MonoBehaviour
                 break;
 
             case "collect":
+                collectManager.setTimer(data.timer);
                 collectManager.setCards(data.cardPool);
+                collectManager.setTurn(data.turnIndex);
 
                 bidCanvas.SetActive(false);
                 collectCanvas.SetActive(true);

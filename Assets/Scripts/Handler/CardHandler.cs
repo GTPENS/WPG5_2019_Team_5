@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class CardHandler : MonoBehaviour
 {
     GameManager manager;
+    CollectManager collectManager;
     Card card;
 
     void Start()
@@ -18,14 +19,25 @@ public class CardHandler : MonoBehaviour
         this.manager = manager;
     }
 
+    public void setCollectManager(CollectManager collectManager)
+    {
+        this.collectManager = collectManager;
+    }
+
     public void setCardData(Card card)
     {
         this.card = card;
     }
 
+    public int getCardId()
+    {
+        return this.card.id;
+    }
+
     public void onCardClick()
     {
         manager.doSelect(card);
+        collectManager.onCardDestroy(card.id);
         Destroy(gameObject);
     }
 }

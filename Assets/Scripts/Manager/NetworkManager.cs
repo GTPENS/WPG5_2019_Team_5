@@ -1,11 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Net.Sockets;
 using System;
-using System.Text;
-using System.Threading;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -15,6 +12,8 @@ public class NetworkManager : MonoBehaviour
     NetworkStream theStream;
     StreamWriter theWriter;
     StreamReader theReader;
+    Action<string> filterData;
+
     string HOST = "localhost";
     int PORT = 8080;
 
@@ -44,22 +43,36 @@ public class NetworkManager : MonoBehaviour
         theWriter.Flush();
     }
 
-    public string readSocket() 
+    IEnumerator listenData()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.1f);
+            
+            if (theStream.DataAvailable)
+            {
+                char[] buffer = new char[mySocket.ReceiveBufferSize];
+                theReader.Read(buffer, 0, mySocket.ReceiveBufferSize);
+
+                string result = new string(buffer);
+                string[] manyResult = result.Trim().Replace("\n", "").Replace("}{", "}|{").Split('|');
+
+                foreach (var item in manyResult)
+                {
+                    Debug.Log($"Receive {item} from Server");
+                    filterData(item);
+                }
+            }
+        }
+    }
+
+    public void readSocket<T>(Action<string> filterData) 
     {
         if (!socketReady)
-            return "notready";
+            Debug.Log("Socket not Ready");
 
-        Thread.Sleep(100);
-        
-        if (theStream.DataAvailable)
-        {
-            char[] buffer = new char[mySocket.ReceiveBufferSize];
-            theReader.Read(buffer, 0, mySocket.ReceiveBufferSize);
-        
-            return new string(buffer);
-        }
-        
-        return "notavailable";
+        this.filterData = filterData;
+        StartCoroutine(listenData());
     }
 
     public void closeSocket() 

@@ -60,10 +60,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Send {jsonString} to Server");
             
         network.writeSocket(jsonString);
-
-        string result = network.readSocket();
-        Debug.Log($"Receive {result} from Server");
-        filterData(result);
+        network.readSocket<string>(filterData);
     }
 
     public void doBidding(int bidValue)
@@ -76,12 +73,7 @@ public class GameManager : MonoBehaviour
         updateGold();
 
         string jsonString = JsonUtility.ToJson(data);
-
         network.writeSocket(jsonString);
-        string result = network.readSocket();
-
-        Debug.Log($"Receive {result} from Server");
-        filterData(result);
     }
 
     public void doSelect(Card card)
@@ -91,12 +83,7 @@ public class GameManager : MonoBehaviour
         data.cardId = card.id;
 
         string jsonString = JsonUtility.ToJson(data);
-
         network.writeSocket(jsonString);
-        string result = network.readSocket();
-
-        Debug.Log($"Receive {result} from Server");
-        filterData(result);
     }
 
     void filterData(string result)

@@ -29,6 +29,7 @@ public class NetworkManager : MonoBehaviour
             return true;
         }
         catch (Exception e) {
+            Debug.Log($"Socket Error: {e.ToString()}");
             return false;
         }
     }

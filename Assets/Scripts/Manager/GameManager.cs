@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {   
@@ -11,8 +12,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject collectCanvas;
     [SerializeField] GameObject actionCanvas;
     [SerializeField] GameObject sellCanvas;
-    [SerializeField] GameObject goldText;
 
+    MainManager mainManager;
     MenuManager menuManager;
     BidManager bidManager;
     CollectManager collectManager;
@@ -30,6 +31,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        mainManager = mainCanvas.GetComponent<MainManager>();
+
         menuManager = menuCanvas.GetComponent<MenuManager>();
         menuManager.setManager(this);
 
@@ -43,6 +46,11 @@ public class GameManager : MonoBehaviour
     public Player getPlayer()
     {
         return player;
+    }
+
+    public List<Player> GetPlayers()
+    {
+        return playerList;
     }
 
     public void joinGame()
@@ -61,6 +69,13 @@ public class GameManager : MonoBehaviour
             
         network.writeSocket(jsonString);
         network.readSocket<string>(filterData);
+
+        mainManager.setManager(this);
+    }
+
+    Player getPlayerDetail(int id)
+    {
+        return playerList.Where(p => p.id == id).First();
     }
 
     public void doBidding(int bidValue)
@@ -70,7 +85,7 @@ public class GameManager : MonoBehaviour
         data.bidValue = bidValue;
         
         player.gold -= bidValue;
-        updateGold();
+        mainManager.setGoldText(player.gold);
 
         string jsonString = JsonUtility.ToJson(data);
         network.writeSocket(jsonString);
@@ -89,13 +104,14 @@ public class GameManager : MonoBehaviour
     void filterData(string result)
     {
         Data data = JsonUtility.FromJson<Data>(result);
+
+        playerList = data.playerList;
+        player.id = data.playerId;
+        player.gold = getPlayerDetail(player.id).gold;
         
         switch (data.command)
         {
             case "bid":
-                player.id = data.playerId;
-                playerList = data.playerList;
-
                 bidManager.setTimer(data.timer);
 
                 menuCanvas.SetActive(false);
@@ -107,6 +123,8 @@ public class GameManager : MonoBehaviour
                 collectManager.setTimer(data.timer);
                 collectManager.setCards(data.cardPool);
                 collectManager.setTurn(data.turnIndex);
+
+                mainManager.updatePlayersInfo();
 
                 bidCanvas.SetActive(false);
                 collectCanvas.SetActive(true);
@@ -123,10 +141,5 @@ public class GameManager : MonoBehaviour
                 sellCanvas.SetActive(true);
                 break;
         }
-    }
-
-    void updateGold()
-    {
-        goldText.GetComponent<Text>().text = player.gold.ToString();
     }
 }

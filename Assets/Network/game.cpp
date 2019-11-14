@@ -237,6 +237,7 @@ void Game::sortBid()
 		for (int j = 0; j < playerList.size(); j++)
 		{
 			if (playerList[j].getId() == bid.getId()) {
+				playerList[j].reduceGold(bid.getValue());
 				playerList[j].setTurn(i);
 			}
 		}

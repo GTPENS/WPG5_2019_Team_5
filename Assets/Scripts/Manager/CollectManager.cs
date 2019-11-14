@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class CollectManager : MonoBehaviour
 {
     [SerializeField] GameObject timerTextObject;
-    [SerializeField] GameObject playerGrid;
     [SerializeField] GameObject cardGrid;
     [SerializeField] GameObject[] cards;
 

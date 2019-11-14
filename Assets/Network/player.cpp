@@ -4,7 +4,7 @@ Player::Player(int id)
 {
     this->id = id;
     this->turn = 0;
-    this->gold = 0;
+    this->gold = 2000;
 }
 
 int Player::getId()

@@ -13,6 +13,7 @@ class Card
         char const *getSpell();
 
         static char const *getRandomType();
+        static bool randomSpecial();
         static char const *getRandomSpell();
 
         Json::Value toArray();

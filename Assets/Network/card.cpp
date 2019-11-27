@@ -37,15 +37,20 @@ char const *Card::getSpell()
 
 char const *Card::getRandomType()
 {
-    char const *Type[] = {"Marine", "Finance", "Commerce", "Agriculture"};
+    char const *Type[] = {"Kelautan", "Perdagangan", "Pertanian", "Keuangan"};
     int max = sizeof(Type) / sizeof(Type[0]);
 
     return Type[random(0, max - 1)];
 }
 
+bool Card::randomSpecial()
+{
+    return random(0, 1);
+}
+
 char const *Card::getRandomSpell()
 {
-    char const *Spell[] = {"Double UP", "Double DOWN", "Commerce", "Agriculture"};
+    char const *Spell[] = {"Investor Plus", "Investor Min", "Info Bursa", "Beruntung"};
     int max = sizeof(Spell) / sizeof(Spell[0]);
 
     return Spell[random(0, max - 1)];

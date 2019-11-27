@@ -73,10 +73,10 @@ public class CollectManager : MonoBehaviour
     {
         switch (type)
         {
-            case "Marine": return 0;
-            case "Finance": return 1;
-            case "Commerce": return 2;
-            case "Agriculture": return 3;
+            case "Kelautan": return 0;
+            case "Perdagangan": return 1;
+            case "Pertanian": return 2;
+            case "Keuangan": return 3;
             default: return -1;
         }
     }

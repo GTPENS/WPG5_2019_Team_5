@@ -219,7 +219,13 @@ void Game::populateCards(Data *data)
 {
 	for (int i = 0; i < 4; i++)
 	{
-		randomCards.push_back(Card(cardIndex, Card::getRandomType()));
+		char const *type = Card::getRandomType();
+
+		if (Card::randomSpecial())
+			randomCards.push_back(Card(cardIndex, type, true, Card::getRandomSpell()));
+		else
+			randomCards.push_back(Card(cardIndex, type));
+		
 		cardIndex++;
 	}
 	
@@ -329,4 +335,14 @@ void Game::action()
 		Data data("sell", playerList);
 		sendToAll(data, TO_ALL);
 	}
+}
+
+void Game::doAction(int playerId, int cardId, int target)
+{
+	
+}
+
+void Game::doSkip()
+{
+	
 }

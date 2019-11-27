@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     MenuManager menuManager;
     BidManager bidManager;
     CollectManager collectManager;
+    ActionManager actionManager;
 
     NetworkManager network;
     bool isServerOn;
@@ -41,6 +42,9 @@ public class GameManager : MonoBehaviour
 
         collectManager = collectCanvas.GetComponent<CollectManager>();
         collectManager.setManager(this);
+
+        actionManager = actionCanvas.GetComponent<ActionManager>();
+        actionManager.setManager(this);
     }
 
     public Player getPlayer()
@@ -73,7 +77,7 @@ public class GameManager : MonoBehaviour
         mainManager.setManager(this);
     }
 
-    Player getPlayerDetail(int id)
+    public Player getPlayerDetail(int id)
     {
         return playerList.Where(p => p.id == id).First();
     }
@@ -106,8 +110,7 @@ public class GameManager : MonoBehaviour
         Data data = JsonUtility.FromJson<Data>(result);
 
         playerList = data.playerList;
-        player.id = data.playerId;
-        player.gold = getPlayerDetail(player.id).gold;
+        player = getPlayerDetail(data.playerId);
         
         switch (data.command)
         {
@@ -131,6 +134,8 @@ public class GameManager : MonoBehaviour
                 break;
 
             case "action":
+                actionManager.setTimer(data.timer);
+
                 collectCanvas.SetActive(false);
                 actionCanvas.SetActive(true);
                 break;

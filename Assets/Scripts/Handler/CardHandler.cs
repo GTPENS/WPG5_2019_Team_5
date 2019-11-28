@@ -7,6 +7,7 @@ public class CardHandler : MonoBehaviour
 {
     GameManager manager;
     CollectManager collectManager;
+    ActionManager actionManager;
     Card card;
 
     void Start()
@@ -24,6 +25,11 @@ public class CardHandler : MonoBehaviour
         this.collectManager = collectManager;
     }
 
+    public void setActionManager(ActionManager actionManager)
+    {
+        this.actionManager = actionManager;
+    }
+
     public void setCardData(Card card)
     {
         this.card = card;
@@ -34,10 +40,23 @@ public class CardHandler : MonoBehaviour
         return this.card.id;
     }
 
+    public string getCardType()
+    {
+        return this.card.type;
+    }
+
     public void onCardClick()
     {
-        manager.doSelect(card);
-        collectManager.onCardDestroy(card.id);
-        Destroy(gameObject);
+        if (collectManager != null) {
+            manager.doSelect(card);
+            collectManager.onCardDestroy(card.id);
+            Destroy(gameObject);
+        }
+
+        if (actionManager != null) {
+            manager.doSpell(card);
+            actionManager.onCardDestroy(card.id);
+            Destroy(gameObject);
+        }
     }
 }

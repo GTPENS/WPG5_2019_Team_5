@@ -7,7 +7,6 @@ public class CollectManager : MonoBehaviour
 {
     [SerializeField] GameObject timerTextObject;
     [SerializeField] GameObject cardGrid;
-    [SerializeField] GameObject[] cards;
 
     GameManager manager;
     List<Card> cardPool;
@@ -25,15 +24,15 @@ public class CollectManager : MonoBehaviour
         {
             Card card = cardPool[i];
 
-            var cardObject = Instantiate(cards[getCardIndex(card.type)], 
+            var cardObject = Instantiate(manager.cards[GameManager.getCardIndex(card.type)], 
                 new Vector2(), Quaternion.identity);
             cardObject.transform.SetParent(cardGrid.transform, false);
             cardObject.transform.localScale = Vector3.one;
 
             CardHandler handler = cardObject.GetComponent<CardHandler>();
             handler.setManager(manager);
-            handler.setCollectManager(this);
             handler.setCardData(card);
+            handler.setCollectManager(this);
 
             cardObjects.Add(cardObject);
         }
@@ -69,25 +68,15 @@ public class CollectManager : MonoBehaviour
         this.timer = timer;
     }
 
-    int getCardIndex(string type)
-    {
-        switch (type)
-        {
-            case "Kelautan": return 0;
-            case "Perdagangan": return 1;
-            case "Pertanian": return 2;
-            case "Keuangan": return 3;
-            default: return -1;
-        }
-    }
-
     public void onCardDestroy(int id)
     {
         for (int i = 0; i < cardObjects.Count; i++) {
             CardHandler cardHandler = cardObjects[i].GetComponent<CardHandler>();
 
-            if (cardHandler.getCardId() == id)
+            if (cardHandler.getCardId() == id) {
+                manager.addToDeck(cardHandler);
                 cardObjects.RemoveAt(i);
+            }
         }
     }
 

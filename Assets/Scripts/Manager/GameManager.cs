@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject collectCanvas;
     [SerializeField] GameObject actionCanvas;
     [SerializeField] GameObject sellCanvas;
+    public GameObject[] cards;
 
     MainManager mainManager;
     MenuManager menuManager;
@@ -55,6 +56,18 @@ public class GameManager : MonoBehaviour
     public List<Player> GetPlayers()
     {
         return playerList;
+    }
+
+    public static int getCardIndex(string type)
+    {
+        switch (type)
+        {
+            case "Kelautan": return 0;
+            case "Perdagangan": return 1;
+            case "Pertanian": return 2;
+            case "Keuangan": return 3;
+            default: return -1;
+        }
     }
 
     public void joinGame()
@@ -105,6 +118,17 @@ public class GameManager : MonoBehaviour
         network.writeSocket(jsonString);
     }
 
+    public void doSpell(Card card)
+    {
+        Data data = new Data("spell");
+        data.playerId = player.id;
+        data.cardId = card.id;
+        data.cardSpell = card.spell;
+
+        string jsonString = JsonUtility.ToJson(data);
+        network.writeSocket(jsonString);
+    }
+
     void filterData(string result)
     {
         Data data = JsonUtility.FromJson<Data>(result);
@@ -146,5 +170,10 @@ public class GameManager : MonoBehaviour
                 sellCanvas.SetActive(true);
                 break;
         }
+    }
+
+    public void addToDeck(CardHandler handler)
+    {
+        mainManager.addCard(handler);
     }
 }

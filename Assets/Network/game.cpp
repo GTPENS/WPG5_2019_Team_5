@@ -25,6 +25,13 @@ Game::Game()
 	this->turnIndex = 0;
 	this->cardIndex = 0;
 
+	vector<string> pool{"Investor Plus", "Investor Min", "Info Bursa", "Beruntung"};
+
+	this->economyLaut = pool;
+	this->economyDagang = pool;
+	this->economyTani = pool;
+	this->economyUang = pool;
+
 	cout << "* Initialize Game" << endl;
 }
 
@@ -32,6 +39,15 @@ void Game::setMaxPlayer(int max)
 {
 	this->maxPlayer = max;
 	cout << "* Max Player set to " << maxPlayer << endl;
+}
+
+void Game::economyShuffle()
+{
+	auto rng = default_random_engine{};
+	shuffle(begin(economyLaut), end(economyLaut), rng);
+	shuffle(begin(economyDagang), end(economyDagang), rng);
+	shuffle(begin(economyTani), end(economyTani), rng);
+	shuffle(begin(economyUang), end(economyUang), rng);
 }
 
 void sendToAll(Data data, int current = TO_ALL)
@@ -222,7 +238,8 @@ void Game::populateCards(Data *data)
 		char const *type = Card::getRandomType();
 
 		if (Card::randomSpecial())
-			randomCards.push_back(Card(cardIndex, type, true, Card::getRandomSpell()));
+			// randomCards.push_back(Card(cardIndex, type, true, Card::getRandomSpell()));
+			randomCards.push_back(Card(cardIndex, type, true, "Beruntung"));
 		else
 			randomCards.push_back(Card(cardIndex, type));
 		
@@ -337,9 +354,49 @@ void Game::action()
 	}
 }
 
-void Game::doAction(int playerId, int cardId, int target)
+void Game::doSpell(int playerId, int cardId, const char *cardSpell, int target)
 {
-	
+	cout << "    * Player " << playerId << " => " << cardSpell << " Special Card" << endl;
+
+	if (strcmp(cardSpell, "Investor Plus") == 0) {
+		
+	}
+	else if (strcmp(cardSpell, "Investor Min") == 0) {
+		
+	}
+	else if (strcmp(cardSpell, "Info Bursa") == 0) {
+		
+	}
+	else if (strcmp(cardSpell, "Beruntung") == 0) {
+		// Get two additional card
+		for (int i = 0; i < 2; i++)
+		{
+			for (int j = 0; j < playerList.size(); j++)
+			{
+				char const *type = Card::getRandomType();
+
+				if (playerList[j].getId() == playerId) {
+					playerList[j].addCard(Card(cardIndex, type));
+					cardIndex++;
+				}
+			}
+		}
+	}
+
+	if (index < playerList.size()) 
+	{
+		cout << "* Waiting other player" << endl;
+
+		Data data("wait", playerList);
+		sendBack(data, target);
+	}
+	else 
+	{
+		cout << "* Action Phase Complete" << endl;
+
+		Data data("sell", playerList);
+		sendToAll(data, TO_ALL);
+	}
 }
 
 void Game::doSkip()

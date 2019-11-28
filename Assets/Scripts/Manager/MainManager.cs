@@ -8,6 +8,7 @@ public class MainManager : MonoBehaviour
     [SerializeField] GameObject goldTextObject;
     [SerializeField] GameObject playerGrid;
     [SerializeField] GameObject playerPrefab;
+    [SerializeField] GameObject cardsGrid;
 
     GameManager manager;
     Text goldText;
@@ -59,5 +60,15 @@ public class MainManager : MonoBehaviour
             if (infoHandler.getPlayer().id == players[i].id)
                 infoHandler.setPlayer(players[i]);
         }
+    }
+
+    public void addCard(CardHandler handler)
+    {
+        int index = GameManager.getCardIndex(handler.getCardType());
+        
+        var cardObject = Instantiate(manager.cards[index], 
+            new Vector2(), Quaternion.identity);
+        cardObject.transform.SetParent(cardsGrid.transform, false);
+        cardObject.transform.localScale = Vector3.one;
     }
 }

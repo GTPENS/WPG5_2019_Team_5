@@ -22,6 +22,10 @@ void onRequest(Game *game, char *message, int target)
 	{
 		game->doSelect(root["playerId"].asUInt(), root["cardId"].asUInt(), target);
 	}
+	else if (root["command"] == "spell") 
+	{
+		game->doSpell(root["playerId"].asUInt(), root["cardId"].asUInt(), root["cardSpell"].asCString(), target);
+	}
 }
 
 int main(int argc, char *argv[]) 
@@ -30,5 +34,6 @@ int main(int argc, char *argv[])
 	
 	Game game;
 	game.setMaxPlayer(argc > 1 ? atoi(argv[1]) : 4);
+	game.economyShuffle();
 	game.run(onRequest);
 }

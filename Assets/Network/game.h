@@ -12,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <random>
 #include <jsoncpp/json/json.h>
 #include "data.h"
 #include "player.h"
@@ -27,6 +28,7 @@ class Game
         int index;
         
         void setMaxPlayer(int);
+        void economyShuffle();
         void run(void (*) (Game *, char *, int));
         void addPlayer(Player, int);
         void doBid(int, int, int);
@@ -34,7 +36,7 @@ class Game
         void sortBid();
         void doSelect(int, int, int);
         void action();
-        void doAction(int, int, int);
+        void doSpell(int, int, const char *, int);
         void doSkip();
 
     private:
@@ -49,4 +51,9 @@ class Game
         vector<Player> playerList;
         vector<Bid> bidList;
         vector<Card> randomCards;
+
+        vector<string> economyLaut;
+        vector<string> economyDagang;
+        vector<string> economyTani;
+        vector<string> economyUang;
 };

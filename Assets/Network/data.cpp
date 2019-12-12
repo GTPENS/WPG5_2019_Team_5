@@ -54,6 +54,7 @@ Json::Value Data::toArray()
 {
     Json::Value value;
     value["command"] = this->command;
+    value["playerId"] = this->playerId;
     value["timer"] = this->timer;
     value["turnIndex"] = this->turnIndex;
 

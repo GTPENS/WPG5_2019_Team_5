@@ -48,7 +48,7 @@ public class InfoHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     void updateText()
     {
-        turnText.text = $"Turn {player.turn}";
+        turnText.text = $"Turn {player.turn + 1}";
         goldText.text = $"Rp. {player.gold}";
     }
 }

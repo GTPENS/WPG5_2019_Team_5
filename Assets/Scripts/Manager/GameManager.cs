@@ -73,7 +73,8 @@ public class GameManager : MonoBehaviour
 
     void nextTurn()
     {
-        turnIndex = turnIndex + 1 < playerList.Count ? turnIndex + 1 : 0;
+        turnIndex = (turnIndex + 1) < playerList.Count ? turnIndex + 1 : 0;
+        Debug.Log($"turn index: {turnIndex}");
     }
 
     public static int getCardIndex(string type)
@@ -153,10 +154,13 @@ public class GameManager : MonoBehaviour
 
         stockList = data.stockList;
         playerList = data.playerList;
-        player = getPlayerDetail(data.playerId);
         
         switch (data.command)
         {
+            case "preBid":
+                player = getPlayerDetail(data.playerId);
+                break;
+
             case "bid":
                 bidManager.setTimer(data.timer);
 

@@ -179,12 +179,12 @@ void Game::addPlayer(Player player, int target)
 	cout << "    * Add Player with id " << player.getId() << endl;
 	playerList.push_back(player);
 
+	Data data("preBid", stockList, playerList);
+	data.setPlayerId(player.getId());
+	sendBack(data, target);
+
 	if (playerList.size() < maxPlayer) {
 		cout << "* Waiting other player" << endl;
-
-		Data data("wait", stockList, playerList);
-		data.setPlayerId(player.getId());
-		sendBack(data, target);
 	}
 	else
 	{

@@ -60,6 +60,7 @@ public class CardHandler : MonoBehaviour
 
     public void onCardClick()
     {
+        Debug.Log($"turnIndex: {manager.getTurnIndex()} myTurnIndex: {manager.getPlayer().turn}");
         if (manager.getTurnIndex() != manager.getPlayer().turn) return;
         
         if (collectManager != null) {
@@ -73,5 +74,10 @@ public class CardHandler : MonoBehaviour
             actionManager.onCardDestroy(card.id);
             Destroy(gameObject);
         }
+    }
+
+    public void selfDestroy()
+    {
+        Destroy(gameObject);
     }
 }

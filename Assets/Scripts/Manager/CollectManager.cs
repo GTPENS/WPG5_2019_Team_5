@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,6 +40,8 @@ public class CollectManager : MonoBehaviour
 
         timerText.text = timer.ToString();
         coroutine = StartCoroutine(startTimer());
+
+        updateDebug();
     }
 
     public void setManager(GameManager manager)
@@ -102,5 +105,34 @@ public class CollectManager : MonoBehaviour
 
         int random = Random.Range(0, cardObjects.Count - 1);
         cardObjects[random].GetComponent<CardHandler>().onCardClick();
+    }
+
+    public void syncDeck(List<Card> cardPool)
+    {
+        if (cardObjects == null || cardPool == null) return;
+
+        Debug.Log($"cardObject count: {cardObjects.Count}, cardPool count: {cardPool.Count}");
+
+        var cards = cardObjects.Where(x => !cardPool.Contains(x.GetComponent<CardHandler>().getCard()));
+
+        if (cards.Count() > 0) {
+            var card = cards.First();
+
+            Debug.Log($"remove card with id {card.GetComponent<CardHandler>().getCardId()}");
+
+            var cardHandlers = cardGrid.GetComponentsInChildren<CardHandler>();
+            var minor = cardHandlers.Where(x => x == card);
+
+            if (minor.Count() > 0)
+                minor.First().selfDestroy();
+
+            cardObjects.Remove(card);
+        }
+    }
+
+    public void updateDebug()
+    {
+        Text lol = GameObject.FindGameObjectWithTag("DebugText").GetComponent<Text>();
+        lol.text = $"turnIndex: {manager.getTurnIndex()}\nmyIndex: {manager.getPlayer().turn}";
     }
 }

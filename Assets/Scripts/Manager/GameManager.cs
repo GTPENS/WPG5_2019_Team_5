@@ -71,12 +71,6 @@ public class GameManager : MonoBehaviour
         return turnIndex;
     }
 
-    void nextTurn()
-    {
-        turnIndex = (turnIndex + 1) < playerList.Count ? turnIndex + 1 : 0;
-        Debug.Log($"turn index: {turnIndex}");
-    }
-
     public static int getCardIndex(string type)
     {
         switch (type)
@@ -170,27 +164,38 @@ public class GameManager : MonoBehaviour
                 break;
 
             case "collect":
+                turnIndex = data.turnIndex;
+                Debug.Log($"turnIndex: {turnIndex}");
+
+                player = getPlayerDetail(player.id);
+
                 collectManager.setTimer(data.timer);
                 collectManager.setCards(data.cardPool);
-                collectManager.setTurn(data.turnIndex);
+                collectManager.setTurn(turnIndex);
 
                 mainManager.updatePlayersInfo();
-                mainManager.syncDeck(data.cardPool);
+                collectManager.syncDeck(data.cardPool);
 
                 bidCanvas.SetActive(false);
                 collectCanvas.SetActive(true);
+                break;
 
-                nextTurn();
+            case "waitCollect":
+                turnIndex = data.turnIndex;
+                Debug.Log($"turnIndex: {turnIndex}");
+
+                collectManager.syncDeck(data.cardPool);
+                collectManager.updateDebug();
                 break;
 
             case "action":
+                collectManager.updateDebug();
+
                 mainManager.updatePlayersInfo();
                 actionManager.setTimer(data.timer);
 
                 collectCanvas.SetActive(false);
                 actionCanvas.SetActive(true);
-
-                nextTurn();
                 break;
 
             case "sell":
@@ -199,8 +204,6 @@ public class GameManager : MonoBehaviour
                 collectCanvas.SetActive(false);
                 actionCanvas.SetActive(false);
                 sellCanvas.SetActive(true);
-
-                nextTurn();
                 break;
 
             case "economy":

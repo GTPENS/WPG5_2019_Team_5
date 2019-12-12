@@ -15,14 +15,14 @@ public class MainManager : MonoBehaviour
     GameManager manager;
     Text goldText;
     List<GameObject> playerObjects;
-    List<GameObject> cardObjects;
+    List<GameObject> deckObjects;
     StockHandler stockHandler;
 
     void Start()
     {
         goldText = goldTextObject.GetComponent<Text>();
         playerObjects = new List<GameObject>();
-        cardObjects = new List<GameObject>();
+        deckObjects = new List<GameObject>();
 
         stockHandler = stocksGrid.GetComponent<StockHandler>();
 
@@ -85,21 +85,11 @@ public class MainManager : MonoBehaviour
         cardObject.transform.localScale = Vector3.one;
 
         cardObject.GetComponent<CardHandler>().setCardHandler(handler);
-        cardObjects.Add(cardObject);
-    }
-
-    public void syncDeck(List<Card> cardPool)
-    {
-        if (cardObjects == null || cardPool == null) return;
-
-        var cards = cardObjects.Where(x => !cardPool.Contains(x.GetComponent<CardHandler>().getCard()));
-
-        if (cards.Count() > 0)
-            cardObjects.Remove(cards.First());
+        deckObjects.Add(cardObject);
     }
 
     public List<GameObject> getCardObjects()
     {
-        return cardObjects;
+        return deckObjects;
     }
 }

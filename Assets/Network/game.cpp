@@ -225,6 +225,7 @@ void Game::doBid(int playerId, int bidValue, int target)
 		sortBid();
 			
 		Data data("collect", stockList, playerList);
+		data.setTurn(turnIndex);
 		data.setTimer(10);
 
 		populateCards(&data);
@@ -254,6 +255,8 @@ void Game::sortBid()
 {
 	cout << "* Bidding Phase Complete" << endl;
 
+	bool turnChanged = false;
+
 	for (int i = 0; i < bidList.size(); i++)
 	{
 		Bid bid = bidList[i];
@@ -263,6 +266,11 @@ void Game::sortBid()
 			if (playerList[j].getId() == bid.getId()) {
 				playerList[j].reduceGold(bid.getValue());
 				playerList[j].setTurn(i);
+
+				if (!turnChanged) {
+					turnIndex = j;
+					turnChanged = true;
+				}
 			}
 		}
 
@@ -299,10 +307,10 @@ void Game::doSelect(int playerId, int cardId, int target)
 		}
 	}
 
-	if (turnIndex + 1 >= playerList.size())
+	if (turnIndex >= playerList.size())
 		turnIndex = 0;
 
-	Data data("collect", stockList, playerList);
+	Data data("waitCollect", stockList, playerList);
 	data.setCards(randomCards);
 	data.setTimer(10);
 	data.setTurn(turnIndex);

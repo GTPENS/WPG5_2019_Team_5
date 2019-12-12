@@ -53,7 +53,7 @@ public class BidManager : MonoBehaviour
         int playerGold = manager.getPlayer().gold;
         this.value = (int) ((value / 100f) * playerGold);
 
-        bidText.GetComponent<Text>().text = this.value.ToString();
+        bidText.GetComponent<Text>().text = $"${this.value}";
     }
 
     IEnumerator startTimer()

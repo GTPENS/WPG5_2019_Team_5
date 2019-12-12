@@ -1,6 +1,5 @@
 public class Config {
-    public int gold = 2000;
-    public int turn = 0;
+    public int gold = 200;
 
     private static Config instance = new Config();
 

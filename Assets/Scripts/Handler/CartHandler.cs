@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SellCanvas : MonoBehaviour
+public class CartHandler : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()

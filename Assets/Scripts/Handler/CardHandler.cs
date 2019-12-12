@@ -9,6 +9,7 @@ public class CardHandler : MonoBehaviour
     CollectManager collectManager;
     ActionManager actionManager;
     Card card;
+    bool canMove = false;
 
     void Start()
     {
@@ -35,6 +36,18 @@ public class CardHandler : MonoBehaviour
         this.card = card;
     }
 
+    public void setCardHandler(CardHandler cardHandler)
+    {
+        this.manager = cardHandler.manager;
+        this.collectManager = cardHandler.collectManager;
+        this.card = cardHandler.card;
+    }
+
+    public Card getCard()
+    {
+        return this.card;
+    }
+
     public int getCardId()
     {
         return this.card.id;
@@ -47,6 +60,8 @@ public class CardHandler : MonoBehaviour
 
     public void onCardClick()
     {
+        if (manager.getTurnIndex() != manager.getPlayer().turn) return;
+        
         if (collectManager != null) {
             manager.doSelect(card);
             collectManager.onCardDestroy(card.id);

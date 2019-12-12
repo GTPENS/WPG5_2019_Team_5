@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "stock.h"
 #include "player.h"
 #include "card.h"
 #include <jsoncpp/json/json.h>
@@ -10,7 +11,7 @@ using namespace std;
 class Data
 {
     public:
-        Data(string, vector<Player>);
+        Data(string, vector<Stock>, vector<Player>);
 
         int getPlayerId();
         void setPlayerId(int);
@@ -28,6 +29,7 @@ class Data
         int timer;
         int turnIndex;
 
+        vector<Stock> stockList;
         vector<Player> playerList;
         vector<Card> cardPool;
 };

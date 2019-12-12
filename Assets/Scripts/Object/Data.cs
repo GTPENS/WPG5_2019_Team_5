@@ -9,6 +9,7 @@ public class Data
     public int playerId;
     public int bidValue;
     public int timer;
+    public List<Stock> stockList;
     public List<Player> playerList;
     public List<Card> cardPool;
     public int cardId;

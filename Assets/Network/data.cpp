@@ -4,9 +4,10 @@
 
 using namespace std;
 
-Data::Data(string command, vector<Player> playerList)
+Data::Data(string command, vector<Stock> stockList, vector<Player> playerList)
 {
     this->command = command;
+    this->stockList = stockList;
     this->playerList = playerList;
 
     this->playerId = 0;
@@ -55,6 +56,11 @@ Json::Value Data::toArray()
     value["command"] = this->command;
     value["timer"] = this->timer;
     value["turnIndex"] = this->turnIndex;
+
+    for (int i = 0; i < this->stockList.size(); i++)
+    {
+        value["stockList"][i] = this->stockList[i].toArray();
+    }
 
     for (int i = 0; i < this->playerList.size(); i++)
     {

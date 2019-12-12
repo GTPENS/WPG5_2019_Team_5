@@ -48,6 +48,7 @@ class Game
         socklen_t their_addr_size;
         pthread_t sendt, recvt;
         
+        vector<Stock> stockList;
         vector<Player> playerList;
         vector<Bid> bidList;
         vector<Card> randomCards;

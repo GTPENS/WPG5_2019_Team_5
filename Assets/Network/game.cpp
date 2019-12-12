@@ -24,8 +24,9 @@ Game::Game()
 	this->maxPlayer = 4;
 	this->turnIndex = 0;
 	this->cardIndex = 0;
+	this->stockList = { Stock("Kelautan"), Stock("Perdagangan"), Stock("Kelautan"), Stock("Keuangan") };
 
-	vector<string> pool{"Investor Plus", "Investor Min", "Info Bursa", "Beruntung"};
+	vector<string> pool{ "Investor Plus", "Investor Min", "Info Bursa", "Beruntung" };
 
 	this->economyLaut = pool;
 	this->economyDagang = pool;
@@ -181,7 +182,7 @@ void Game::addPlayer(Player player, int target)
 	if (playerList.size() < maxPlayer) {
 		cout << "* Waiting other player" << endl;
 
-		Data data("wait", playerList);
+		Data data("wait", stockList, playerList);
 		data.setPlayerId(player.getId());
 		sendBack(data, target);
 	}
@@ -189,7 +190,7 @@ void Game::addPlayer(Player player, int target)
 	{
 		cout << "* Max Player Reached, the Game Starts" << endl << endl;
 
-		Data data("bid", playerList);
+		Data data("bid", stockList, playerList);
 		data.setTimer(10);
 		sendToAll(data, TO_ALL);
 	}
@@ -216,14 +217,14 @@ void Game::doBid(int playerId, int bidValue, int target)
 	{
 		cout << "* Waiting other player" << endl;
 
-		Data data("wait", playerList);
+		Data data("wait", stockList, playerList);
 		sendBack(data, target);
 	}
 	else 
 	{
 		sortBid();
 			
-		Data data("collect", playerList);
+		Data data("collect", stockList, playerList);
 		data.setTimer(10);
 
 		populateCards(&data);
@@ -301,7 +302,7 @@ void Game::doSelect(int playerId, int cardId, int target)
 	if (turnIndex + 1 >= playerList.size())
 		turnIndex = 0;
 
-	Data data("collect", playerList);
+	Data data("collect", stockList, playerList);
 	data.setCards(randomCards);
 	data.setTimer(10);
 	data.setTurn(turnIndex);
@@ -340,7 +341,7 @@ void Game::action()
 	{
 		cout << "* Action Phase" << endl;
 		
-		Data data("action", playerList);
+		Data data("action", stockList, playerList);
 		data.setTurn(turnIndex);
 
 		sendToAll(data, TO_ALL);
@@ -349,7 +350,7 @@ void Game::action()
 	{
 		cout << "* Player with Special Card not Found, Action Phase Skipped" << endl;
 
-		Data data("sell", playerList);
+		Data data("sell", stockList, playerList);
 		sendToAll(data, TO_ALL);
 	}
 }
@@ -387,14 +388,14 @@ void Game::doSpell(int playerId, int cardId, const char *cardSpell, int target)
 	{
 		cout << "* Waiting other player" << endl;
 
-		Data data("wait", playerList);
+		Data data("wait", stockList, playerList);
 		sendBack(data, target);
 	}
 	else 
 	{
 		cout << "* Action Phase Complete" << endl;
 
-		Data data("sell", playerList);
+		Data data("sell", stockList, playerList);
 		sendToAll(data, TO_ALL);
 	}
 }

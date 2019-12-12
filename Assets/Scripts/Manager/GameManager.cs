@@ -23,7 +23,10 @@ public class GameManager : MonoBehaviour
     NetworkManager network;
     bool isServerOn;
     Player player;
+    List<Stock> stockList;
     List<Player> playerList;
+
+    int turnIndex = 0;
 
     void Awake()
     {
@@ -53,9 +56,24 @@ public class GameManager : MonoBehaviour
         return player;
     }
 
-    public List<Player> GetPlayers()
+    public List<Stock> getStocks()
+    {
+        return stockList;
+    }
+
+    public List<Player> getPlayers()
     {
         return playerList;
+    }
+
+    public int getTurnIndex()
+    {
+        return turnIndex;
+    }
+
+    void nextTurn()
+    {
+        turnIndex = turnIndex + 1 < playerList.Count ? turnIndex + 1 : 0;
     }
 
     public static int getCardIndex(string type)
@@ -133,6 +151,7 @@ public class GameManager : MonoBehaviour
     {
         Data data = JsonUtility.FromJson<Data>(result);
 
+        stockList = data.stockList;
         playerList = data.playerList;
         player = getPlayerDetail(data.playerId);
         
@@ -152,22 +171,37 @@ public class GameManager : MonoBehaviour
                 collectManager.setTurn(data.turnIndex);
 
                 mainManager.updatePlayersInfo();
+                mainManager.syncDeck(data.cardPool);
 
                 bidCanvas.SetActive(false);
                 collectCanvas.SetActive(true);
+
+                nextTurn();
                 break;
 
             case "action":
+                mainManager.updatePlayersInfo();
                 actionManager.setTimer(data.timer);
 
                 collectCanvas.SetActive(false);
                 actionCanvas.SetActive(true);
+
+                nextTurn();
                 break;
 
             case "sell":
+                mainManager.updatePlayersInfo();
+                
                 collectCanvas.SetActive(false);
                 actionCanvas.SetActive(false);
                 sellCanvas.SetActive(true);
+
+                nextTurn();
+                break;
+
+            case "economy":
+                mainManager.updatePlayersInfo();
+                mainManager.updateStockInfo();
                 break;
         }
     }

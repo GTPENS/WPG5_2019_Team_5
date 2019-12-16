@@ -39,9 +39,9 @@ public class CollectManager : MonoBehaviour
         }
 
         timerText.text = timer.ToString();
-        coroutine = StartCoroutine(startTimer());
+        resetTimer();
 
-        updateDebug();
+        // updateDebug();
     }
 
     public void setManager(GameManager manager)
@@ -62,13 +62,18 @@ public class CollectManager : MonoBehaviour
             if (coroutine != null)
                 StopCoroutine(coroutine);
             
-            coroutine = StartCoroutine(startTimer());
+            resetTimer();
         }
     }
 
     public void setTimer(int timer)
     {
         this.timer = timer;
+    }
+
+    public void resetTimer()
+    {
+        coroutine = StartCoroutine(startTimer());
     }
 
     public void onCardDestroy(int id)
@@ -87,9 +92,10 @@ public class CollectManager : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(1f);
             timer -= 1;
             timerText.text = timer.ToString();
+            
+            yield return new WaitForSeconds(1f);
 
             if (timer <= 0)
             {
@@ -111,28 +117,33 @@ public class CollectManager : MonoBehaviour
     {
         if (cardObjects == null || cardPool == null) return;
 
-        Debug.Log($"cardObject count: {cardObjects.Count}, cardPool count: {cardPool.Count}");
+        for (int i = 0; i < cardObjects.Count; i++)
+        {
+            var objectHandler = cardObjects[i].GetComponent<CardHandler>();
+            var minor = cardPool.Where(x => x.id == objectHandler.getCardId());
 
-        var cards = cardObjects.Where(x => !cardPool.Contains(x.GetComponent<CardHandler>().getCard()));
+            if (minor.Count() <= 0) {
+                var cardHandlers = cardGrid.GetComponentsInChildren<CardHandler>();
 
-        if (cards.Count() > 0) {
-            var card = cards.First();
+                if (cardHandlers.Count() > 0)
+                {
+                    var minorHandlers = cardHandlers.Where(x => x.getCardId() == objectHandler.getCardId());
 
-            Debug.Log($"remove card with id {card.GetComponent<CardHandler>().getCardId()}");
+                    if (minorHandlers.Count() > 0) {
+                        Debug.Log($"card name: {minorHandlers.First().getCardType()}");
+                        minorHandlers.First().selfDestroy();
+                    }
 
-            var cardHandlers = cardGrid.GetComponentsInChildren<CardHandler>();
-            var minor = cardHandlers.Where(x => x == card);
-
-            if (minor.Count() > 0)
-                minor.First().selfDestroy();
-
-            cardObjects.Remove(card);
+                    cardObjects.RemoveAt(i);
+                    break;
+                }
+            }
         }
     }
 
-    public void updateDebug()
-    {
-        Text lol = GameObject.FindGameObjectWithTag("DebugText").GetComponent<Text>();
-        lol.text = $"turnIndex: {manager.getTurnIndex()}\nmyIndex: {manager.getPlayer().turn}";
-    }
+    // public void updateDebug()
+    // {
+    //     Text lol = GameObject.FindGameObjectWithTag("DebugText").GetComponent<Text>();
+    //     lol.text = $"turnIndex: {manager.getTurnIndex()}\nmyIndex: {manager.getPlayer().turn}";
+    // }
 }

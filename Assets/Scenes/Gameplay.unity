@@ -2263,12 +2263,12 @@ GameObject:
   - component: {fileID: 1145659265}
   - component: {fileID: 1145659264}
   m_Layer: 5
-  m_Name: Text
+  m_Name: debugText
   m_TagString: DebugText
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1145659263
 RectTransform:
   m_ObjectHideFlags: 0

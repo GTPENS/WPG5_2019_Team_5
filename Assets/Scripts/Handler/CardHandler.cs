@@ -60,7 +60,6 @@ public class CardHandler : MonoBehaviour
 
     public void onCardClick()
     {
-        Debug.Log($"turnIndex: {manager.getTurnIndex()} myTurnIndex: {manager.getPlayer().turn}");
         if (manager.getTurnIndex() != manager.getPlayer().turn) return;
         
         if (collectManager != null) {

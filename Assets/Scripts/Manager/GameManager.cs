@@ -165,7 +165,6 @@ public class GameManager : MonoBehaviour
 
             case "collect":
                 turnIndex = data.turnIndex;
-                Debug.Log($"turnIndex: {turnIndex}");
 
                 player = getPlayerDetail(player.id);
 
@@ -182,14 +181,17 @@ public class GameManager : MonoBehaviour
 
             case "waitCollect":
                 turnIndex = data.turnIndex;
-                Debug.Log($"turnIndex: {turnIndex}");
 
                 collectManager.syncDeck(data.cardPool);
-                collectManager.updateDebug();
+                collectManager.setTimer(data.timer);
+                collectManager.resetTimer();
+
+                Debug.Log($"waitCollect timer count: {data.timer}");
+                // collectManager.updateDebug();
                 break;
 
             case "action":
-                collectManager.updateDebug();
+                // collectManager.updateDebug();
 
                 mainManager.updatePlayersInfo();
                 actionManager.setTimer(data.timer);

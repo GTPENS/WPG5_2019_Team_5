@@ -40,8 +40,6 @@ public class CollectManager : MonoBehaviour
 
         timerText.text = timer.ToString();
         resetTimer();
-
-        // updateDebug();
     }
 
     public void setManager(GameManager manager)
@@ -58,12 +56,8 @@ public class CollectManager : MonoBehaviour
     {
         this.turn = turn;
 
-        if (gameObject.activeSelf && manager.getPlayer().turn == turn) {
-            if (coroutine != null)
-                StopCoroutine(coroutine);
-            
+        if (gameObject.activeSelf && manager.getPlayer().turn == turn)
             resetTimer();
-        }
     }
 
     public void setTimer(int timer)
@@ -73,6 +67,9 @@ public class CollectManager : MonoBehaviour
 
     public void resetTimer()
     {
+        if (coroutine != null)
+            StopCoroutine(coroutine);
+
         coroutine = StartCoroutine(startTimer());
     }
 
@@ -84,6 +81,8 @@ public class CollectManager : MonoBehaviour
             if (cardHandler.getCardId() == id) {
                 manager.addToDeck(cardHandler);
                 cardObjects.RemoveAt(i);
+            
+                resetTimer();
             }
         }
     }
@@ -140,10 +139,4 @@ public class CollectManager : MonoBehaviour
             }
         }
     }
-
-    // public void updateDebug()
-    // {
-    //     Text lol = GameObject.FindGameObjectWithTag("DebugText").GetComponent<Text>();
-    //     lol.text = $"turnIndex: {manager.getTurnIndex()}\nmyIndex: {manager.getPlayer().turn}";
-    // }
 }

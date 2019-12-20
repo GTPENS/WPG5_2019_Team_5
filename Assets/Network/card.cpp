@@ -25,6 +25,11 @@ int Card::getId()
     return this->id;
 }
 
+char const *Card::getType()
+{
+    return this->type;
+}
+
 bool Card::isSpecial()
 {
     return this->special;

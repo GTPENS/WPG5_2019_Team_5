@@ -255,8 +255,6 @@ void Game::sortBid()
 {
 	cout << "* Bidding Phase Complete" << endl;
 
-	bool turnChanged = false;
-
 	for (int i = 0; i < bidList.size(); i++)
 	{
 		Bid bid = bidList[i];
@@ -266,11 +264,6 @@ void Game::sortBid()
 			if (playerList[j].getId() == bid.getId()) {
 				playerList[j].reduceGold(bid.getValue());
 				playerList[j].setTurn(i);
-
-				if (!turnChanged) {
-					turnIndex = j;
-					turnChanged = true;
-				}
 			}
 		}
 
@@ -285,8 +278,6 @@ void Game::doSelect(int playerId, int cardId, int target)
 		cout << "* Collect Phase" << endl;
 		firstCollect = true;
 	}
-	
-	cout << "    * Player " << playerId << " => Card " << cardId << endl;
 
 	// Do remove card from cardPool
 	// Do add card to player cardList
@@ -299,6 +290,9 @@ void Game::doSelect(int playerId, int cardId, int target)
 		for (int j = 0; j < playerList.size(); j++)
 		{
 			if (playerList[j].getId() == playerId) {
+				cout << "    * Player " << playerId << " => Card " << cardId
+					<< " ( " << randomCards[i].getType() << " )" << endl;
+
 				playerList[j].addCard(randomCards[i]);
 				randomCards.erase(randomCards.begin() + i);
 				turnIndex++;

@@ -92,4 +92,15 @@ public class MainManager : MonoBehaviour
     {
         return deckObjects;
     }
+
+    // public void updateDebug()
+    // {
+    //     var debugText = GameObject.FindGameObjectWithTag("DebugText");
+
+    //     if (debugText != null)
+    //     {
+    //         Text lol = debugText.GetComponent<Text>();
+    //         lol.text = $"turnIndex: {manager.getTurnIndex()} myIndex: {manager.getPlayer().turn} myId: {manager.getPlayer().id}";
+    //     }
+    // }
 }

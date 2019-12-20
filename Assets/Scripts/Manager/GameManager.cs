@@ -186,13 +186,10 @@ public class GameManager : MonoBehaviour
                 collectManager.setTimer(data.timer);
                 collectManager.resetTimer();
 
-                Debug.Log($"waitCollect timer count: {data.timer}");
-                // collectManager.updateDebug();
+                // Debug.Log($"waitCollect timer count: {data.timer}");
                 break;
 
             case "action":
-                // collectManager.updateDebug();
-
                 mainManager.updatePlayersInfo();
                 actionManager.setTimer(data.timer);
 
@@ -213,6 +210,9 @@ public class GameManager : MonoBehaviour
                 mainManager.updateStockInfo();
                 break;
         }
+
+        // if (mainManager != null)
+        //     mainManager.updateDebug();
     }
 
     public void addToDeck(CardHandler handler)

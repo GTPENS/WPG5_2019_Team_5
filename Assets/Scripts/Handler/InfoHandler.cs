@@ -14,7 +14,7 @@ public class InfoHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     Text turnText, goldText;
     Player player;
 
-    bool mouseDown;
+    bool mouseDown, ready;
     int turn;
 
     void Start()
@@ -53,9 +53,14 @@ public class InfoHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             updateInfo();
     }
 
+    public void setReady(bool ready)
+    {
+        this.ready = ready;
+    }
+
     void updateInfo()
     {
-        indicator.SetActive(player.turn == turn);
+        indicator.SetActive(ready && player.turn == turn);
 
         turnText.text = $"Turn {player.turn + 1}";
         goldText.text = $"Rp. {player.gold}";

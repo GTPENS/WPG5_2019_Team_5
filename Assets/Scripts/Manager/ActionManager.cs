@@ -7,6 +7,8 @@ public class ActionManager : MonoBehaviour
     [SerializeField] GameObject cardGrid;
     [SerializeField] GameObject[] specialCards;
     [SerializeField] GameObject selectDialog;
+    [SerializeField] GameObject luckyDialog;
+    [SerializeField] GameObject actionButton;
     GameManager manager;
     Player player;
     List<GameObject> cardObjects;

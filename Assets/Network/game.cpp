@@ -240,8 +240,8 @@ void Game::populateCards(Data *data)
 		char const *type = Card::getRandomType();
 
 		if (Card::randomSpecial())
-			// randomCards.push_back(Card(cardIndex, type, true, Card::getRandomSpell()));
-			randomCards.push_back(Card(cardIndex, type, true, "Beruntung"));
+			randomCards.push_back(Card(cardIndex, type, true, Card::getRandomSpell()));
+			// randomCards.push_back(Card(cardIndex, type, true, "Beruntung"));
 		else
 			randomCards.push_back(Card(cardIndex, type));
 		

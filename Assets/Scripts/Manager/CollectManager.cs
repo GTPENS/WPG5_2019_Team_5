@@ -22,7 +22,7 @@ public class CollectManager : MonoBehaviour
         {
             Card card = cardPool[i];
 
-            var cardObject = Instantiate(manager.cards[GameManager.getCardIndex(card.type)], 
+            var cardObject = Instantiate(manager.produceCard(card), 
                 new Vector2(), Quaternion.identity);
             cardObject.transform.SetParent(cardGrid.transform, false);
             cardObject.transform.localScale = Vector3.one;

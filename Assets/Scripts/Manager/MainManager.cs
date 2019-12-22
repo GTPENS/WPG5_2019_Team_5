@@ -9,7 +9,6 @@ public class MainManager : MonoBehaviour
     [SerializeField] GameObject goldTextObject;
     [SerializeField] GameObject timerTextObject;
     [SerializeField] GameObject playerGrid;
-    // [SerializeField] GameObject[] turnIndicators;
     [SerializeField] GameObject playerPrefab;
     [SerializeField] GameObject cardsGrid;
     [SerializeField] GameObject stocksGrid;
@@ -29,11 +28,11 @@ public class MainManager : MonoBehaviour
         deckObjects = new List<GameObject>();
 
         stockHandler = stocksGrid.GetComponent<StockHandler>();
+        cardsGrid.SetActive(true);
 
         setGoldText(manager.getPlayer().gold);
         populatePlayers();
         updateStockInfo();
-        // updateTurnInfo();
     }
 
     public void setManager(GameManager manager)
@@ -83,31 +82,16 @@ public class MainManager : MonoBehaviour
 
             if (infoHandler.getPlayer().id == players[i].id)
             {
+                infoHandler.setReady(manager.isReady());
                 infoHandler.setPlayer(players[i]);
                 infoHandler.setTurn(manager.getTurnIndex());
             }
         }
     }
 
-    // public void updateTurnInfo()
-    // {
-    //     foreach (var item in turnIndicators)
-    //         item.GetComponent<Image>().enabled = false;
-
-    //     var turn = manager.getTurnIndex();
-    //     var match = playerObjects
-    //         .Where(x => x.GetComponent<InfoHandler>().getPlayer().turn == turn)
-    //         .Select((x, index) => index);
-
-    //     if (match.Count() > 0)
-    //         turnIndicators[match.First()].GetComponent<Image>().enabled = true;
-    // }
-
     public void addCard(CardHandler handler)
     {
-        int index = GameManager.getCardIndex(handler.getCardType());
-        
-        var cardObject = Instantiate(manager.cards[index], 
+        var cardObject = Instantiate(manager.produceCard(handler.getCard()), 
             new Vector2(), Quaternion.identity);
         cardObject.transform.SetParent(cardsGrid.transform, false);
         cardObject.transform.localScale = Vector3.one;
@@ -121,14 +105,8 @@ public class MainManager : MonoBehaviour
         return deckObjects;
     }
 
-    // public void updateDebug()
-    // {
-    //     var debugText = GameObject.FindGameObjectWithTag("DebugText");
-
-    //     if (debugText != null)
-    //     {
-    //         Text lol = debugText.GetComponent<Text>();
-    //         lol.text = $"turnIndex: {manager.getTurnIndex()} myIndex: {manager.getPlayer().turn} myId: {manager.getPlayer().id}";
-    //     }
-    // }
+    public void hideCardGrid()
+    {
+        cardsGrid.SetActive(false);
+    }
 }

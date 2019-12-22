@@ -13,6 +13,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject actionCanvas;
     [SerializeField] GameObject sellCanvas;
     public GameObject[] cards;
+    public GameObject[] luckyCards;
+    public GameObject[] infoCards;
+    public GameObject[] plusCards;
+    public GameObject[] minusCards;
 
     MainManager mainManager;
     MenuManager menuManager;
@@ -21,7 +25,7 @@ public class GameManager : MonoBehaviour
     ActionManager actionManager;
 
     NetworkManager network;
-    bool isServerOn;
+    bool isServerOn, ready;
     Player player;
     List<Stock> stockList;
     List<Player> playerList;
@@ -71,6 +75,11 @@ public class GameManager : MonoBehaviour
         return turnIndex;
     }
 
+    public bool isReady()
+    {
+        return ready;
+    }
+
     public static int getCardIndex(string type)
     {
         switch (type)
@@ -81,6 +90,27 @@ public class GameManager : MonoBehaviour
             case "Keuangan": return 3;
             default: return -1;
         }
+    }
+
+    public GameObject produceCard(Card card)
+    {
+        int index = GameManager.getCardIndex(card.type);
+
+        if (card.special)
+        {
+            if (card.spell == "Beruntung")
+                return luckyCards[index];
+            else if (card.spell == "Info Bursa")
+                return infoCards[index];
+            else if (card.spell == "Investor Plus")
+                return plusCards[index];
+            else if (card.spell == "Investor Min")
+                return minusCards[index];
+        }
+        else
+            return cards[index];
+
+        return null;
     }
 
     public void updateTimer(int timer)
@@ -169,6 +199,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case "collect":
+                ready = true;
                 turnIndex = data.turnIndex;
 
                 player = getPlayerDetail(player.id);
@@ -192,12 +223,11 @@ public class GameManager : MonoBehaviour
                 collectManager.syncDeck(data.cardPool);
                 collectManager.setTimer(data.timer);
                 collectManager.resetTimer();
-
-                // Debug.Log($"waitCollect timer count: {data.timer}");
                 break;
 
             case "action":
                 mainManager.updatePlayersInfo();
+                mainManager.hideCardGrid();
                 actionManager.setTimer(data.timer);
 
                 collectCanvas.SetActive(false);
@@ -217,9 +247,6 @@ public class GameManager : MonoBehaviour
                 mainManager.updateStockInfo();
                 break;
         }
-
-        // if (mainManager != null)
-        //     mainManager.updateDebug();
     }
 
     public void addToDeck(CardHandler handler)

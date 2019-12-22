@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] GameObject playButtonObject;
+    [SerializeField] GameObject waitDialog;
     GameManager manager;
     
     void Start()
@@ -20,6 +21,7 @@ public class MenuManager : MonoBehaviour
     
     void onClickPlay()
     {
+        waitDialog.SetActive(true);
         manager.joinGame();
     }
 }

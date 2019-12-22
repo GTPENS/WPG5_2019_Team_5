@@ -166,6 +166,15 @@ public class GameManager : MonoBehaviour
         network.writeSocket(jsonString);
     }
 
+    public void doSkip(string command)
+    {
+        Data data = new Data(command);
+        data.playerId = player.id;
+
+        string jsonString = JsonUtility.ToJson(data);
+        network.writeSocket(jsonString);
+    }
+
     public void doSpell(Card card)
     {
         Data data = new Data("spell");
@@ -226,20 +235,26 @@ public class GameManager : MonoBehaviour
                 break;
 
             case "action":
+                player = getPlayerDetail(player.id);
+
                 mainManager.updatePlayersInfo();
-                mainManager.hideCardGrid();
+                mainManager.setGridActive(false);
                 actionManager.setTimer(data.timer);
 
                 collectCanvas.SetActive(false);
                 actionCanvas.SetActive(true);
                 break;
 
-            case "sell":
+            case "skipAction":
+                actionManager.saveState(turnIndex);
+                turnIndex = data.turnIndex;
+
                 mainManager.updatePlayersInfo();
-                
-                collectCanvas.SetActive(false);
-                actionCanvas.SetActive(false);
-                sellCanvas.SetActive(true);
+                actionManager.checkState();
+                break;
+
+            case "sell":
+                sellFunction();
                 break;
 
             case "economy":
@@ -247,6 +262,16 @@ public class GameManager : MonoBehaviour
                 mainManager.updateStockInfo();
                 break;
         }
+    }
+
+    public void sellFunction()
+    {
+        mainManager.updatePlayersInfo();
+        mainManager.setGridActive(true);
+                
+        collectCanvas.SetActive(false);
+        actionCanvas.SetActive(false);
+        sellCanvas.SetActive(true);
     }
 
     public void addToDeck(CardHandler handler)

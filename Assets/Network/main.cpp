@@ -22,6 +22,10 @@ void onRequest(Game *game, char *message, int target)
 	{
 		game->doSelect(root["playerId"].asUInt(), root["cardId"].asUInt(), target);
 	}
+	else if (root["command"] == "skipAction") 
+	{
+		game->doSkipAction(root["playerId"].asUInt(), target);
+	}
 	else if (root["command"] == "spell") 
 	{
 		game->doSpell(root["playerId"].asUInt(), root["cardId"].asUInt(), root["cardSpell"].asCString(), target);

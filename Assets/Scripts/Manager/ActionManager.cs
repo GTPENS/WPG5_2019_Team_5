@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ActionManager : MonoBehaviour
 {
@@ -13,12 +14,14 @@ public class ActionManager : MonoBehaviour
     Player player;
     List<GameObject> cardObjects;
     Coroutine coroutine;
-    int timer;
+    int timer, tempIndex;
 
     void Start()
     {
         player = manager.getPlayer();
         cardObjects = new List<GameObject>();
+
+        actionButton.GetComponent<Button>().onClick.AddListener(skip);
         
         showSpecialCards();
     }
@@ -35,12 +38,13 @@ public class ActionManager : MonoBehaviour
 
     void showSpecialCards()
     {
-        if (player.cardList != null)
+        Debug.Log($"cardList count: {player.cardList.Count}");
+
         foreach (var card in player.cardList)
         {
             if (!card.special) continue;
 
-            var cardObject = Instantiate(manager.cards[GameManager.getCardIndex(card.type)], 
+            var cardObject = Instantiate(manager.produceCard(card), 
                 new Vector2(), Quaternion.identity);
             cardObject.transform.SetParent(cardGrid.transform, false);
             cardObject.transform.localScale = Vector3.one;
@@ -52,6 +56,22 @@ public class ActionManager : MonoBehaviour
 
             cardObjects.Add(cardObject);
         }
+    }
+
+    void skip()
+    {
+        manager.doSkip("skipAction");
+    }
+
+    public void saveState(int tempIndex)
+    {
+        this.tempIndex = tempIndex;
+    }
+
+    public void checkState()
+    {
+        if (tempIndex >= manager.getTurnIndex())
+            manager.sellFunction();
     }
 
     public void onCardDestroy(int id)

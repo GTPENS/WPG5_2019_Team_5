@@ -36,8 +36,8 @@ class Game
         void sortBid();
         void doSelect(int, int, int);
         void action();
+        void doSkipAction(int, int);
         void doSpell(int, int, const char *, int);
-        void doSkip();
 
     private:
         int my_sock, their_sock, len, maxPlayer, turnIndex, cardIndex;

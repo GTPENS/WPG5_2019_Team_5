@@ -357,6 +357,22 @@ void Game::action()
 	}
 }
 
+void Game::doSkipAction(int playerId, int target)
+{
+	cout << "    * Player " << playerId << " do skip" << endl;
+
+	turnIndex++;
+
+	if (turnIndex >= playerList.size())
+		turnIndex = 0;
+
+	Data data("skipAction", stockList, playerList);
+	data.setTimer(10);
+	data.setTurn(turnIndex);
+	
+	sendToAll(data, TO_ALL);
+}
+
 void Game::doSpell(int playerId, int cardId, const char *cardSpell, int target)
 {
 	cout << "    * Player " << playerId << " => " << cardSpell << " Special Card" << endl;
@@ -400,9 +416,4 @@ void Game::doSpell(int playerId, int cardId, const char *cardSpell, int target)
 		Data data("sell", stockList, playerList);
 		sendToAll(data, TO_ALL);
 	}
-}
-
-void Game::doSkip()
-{
-	
 }

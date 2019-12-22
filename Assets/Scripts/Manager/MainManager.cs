@@ -105,8 +105,8 @@ public class MainManager : MonoBehaviour
         return deckObjects;
     }
 
-    public void hideCardGrid()
+    public void setGridActive(bool status)
     {
-        cardsGrid.SetActive(false);
+        cardsGrid.SetActive(status);
     }
 }

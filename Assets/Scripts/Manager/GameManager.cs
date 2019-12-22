@@ -83,6 +83,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void updateTimer(int timer)
+    {
+        mainManager.setTimerText(timer);
+    }
+
     public void joinGame()
     {
         Data data = new Data("join");
@@ -181,6 +186,8 @@ public class GameManager : MonoBehaviour
 
             case "waitCollect":
                 turnIndex = data.turnIndex;
+
+                mainManager.updatePlayersInfo();
 
                 collectManager.syncDeck(data.cardPool);
                 collectManager.setTimer(data.timer);

@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class BidManager : MonoBehaviour
 {
-    [SerializeField] GameObject timerTextObject;
     [SerializeField] GameObject sliderObject;
     [SerializeField] GameObject bidText;
     [SerializeField] GameObject bidButtonObject;
@@ -14,14 +13,12 @@ public class BidManager : MonoBehaviour
     GameManager manager;
     Slider slider;
     Button button;
-    Text timerText, bidButtonText;
+    Text bidButtonText;
     Coroutine coroutine;
     int timer, value;
 
     void Start()
     {
-        timerText = timerTextObject.GetComponent<Text>();
-
         button = bidButtonObject.GetComponent<Button>();
         button.interactable = true;
         button.onClick.AddListener(onClickBid);
@@ -34,7 +31,7 @@ public class BidManager : MonoBehaviour
 
         value = (int) ((slider.value / 100f) * manager.getPlayer().gold);
 
-        timerText.text = timer.ToString();
+        manager.updateTimer(timer);
         coroutine = StartCoroutine(startTimer());
     }
 
@@ -62,7 +59,7 @@ public class BidManager : MonoBehaviour
         {
             yield return new WaitForSeconds(1f);
             timer -= 1;
-            timerText.text = timer.ToString();
+            manager.updateTimer(timer);
 
             if (timer <= 0)
             {

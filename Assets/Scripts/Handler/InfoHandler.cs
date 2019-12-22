@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class InfoHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
+    [SerializeField] GameObject indicator;
     [SerializeField] GameObject infoDialog;
     [SerializeField] GameObject turnTextObject;
     [SerializeField] GameObject goldTextObject;
@@ -14,13 +15,14 @@ public class InfoHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     Player player;
 
     bool mouseDown;
+    int turn;
 
     void Start()
     {
         turnText = turnTextObject.GetComponent<Text>();
         goldText = goldTextObject.GetComponent<Text>();
 
-        updateText();
+        updateInfo();
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -41,13 +43,20 @@ public class InfoHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void setPlayer(Player player)
     {
         this.player = player;
-
-        if (turnText != null)
-            updateText();
     }
 
-    void updateText()
+    public void setTurn(int turn)
     {
+        this.turn = turn;
+
+        if (turnText != null)
+            updateInfo();
+    }
+
+    void updateInfo()
+    {
+        indicator.SetActive(player.turn == turn);
+
         turnText.text = $"Turn {player.turn + 1}";
         goldText.text = $"Rp. {player.gold}";
     }

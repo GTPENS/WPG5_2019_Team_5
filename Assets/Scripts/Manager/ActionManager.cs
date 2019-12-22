@@ -6,9 +6,11 @@ public class ActionManager : MonoBehaviour
 {
     [SerializeField] GameObject cardGrid;
     [SerializeField] GameObject[] specialCards;
+    [SerializeField] GameObject selectDialog;
     GameManager manager;
     Player player;
     List<GameObject> cardObjects;
+    Coroutine coroutine;
     int timer;
 
     void Start()
@@ -31,6 +33,7 @@ public class ActionManager : MonoBehaviour
 
     void showSpecialCards()
     {
+        if (player.cardList != null)
         foreach (var card in player.cardList)
         {
             if (!card.special) continue;
@@ -58,5 +61,30 @@ public class ActionManager : MonoBehaviour
                 cardObjects.RemoveAt(i);
             }
         }
+    }
+
+    IEnumerator startTimer()
+    {
+        while (true)
+        {
+            timer -= 1;
+            manager.updateTimer(timer);
+            
+            yield return new WaitForSeconds(1f);
+
+            if (timer <= 0)
+            {
+                randomClick();
+                break;
+            }
+        }
+    }
+
+    void randomClick()
+    {
+        StopCoroutine(coroutine);
+
+        int random = Random.Range(0, cardObjects.Count - 1);
+        cardObjects[random].GetComponent<CardHandler>().onCardClick();
     }
 }

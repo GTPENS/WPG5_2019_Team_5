@@ -6,19 +6,16 @@ using UnityEngine.UI;
 
 public class CollectManager : MonoBehaviour
 {
-    [SerializeField] GameObject timerTextObject;
     [SerializeField] GameObject cardGrid;
 
     GameManager manager;
     List<Card> cardPool;
     List<GameObject> cardObjects;
     Coroutine coroutine;
-    Text timerText;
     int turn, timer;
 
     void Start()
     {
-        timerText = timerTextObject.GetComponent<Text>();
         cardObjects = new List<GameObject>();
 
         for (var i = 0; i < cardPool.Count; i++)
@@ -38,7 +35,7 @@ public class CollectManager : MonoBehaviour
             cardObjects.Add(cardObject);
         }
 
-        timerText.text = timer.ToString();
+        manager.updateTimer(timer);
         resetTimer();
     }
 
@@ -92,7 +89,7 @@ public class CollectManager : MonoBehaviour
         while (true)
         {
             timer -= 1;
-            timerText.text = timer.ToString();
+            manager.updateTimer(timer);
             
             yield return new WaitForSeconds(1f);
 

@@ -7,13 +7,15 @@ using UnityEngine.UI;
 public class MainManager : MonoBehaviour
 {
     [SerializeField] GameObject goldTextObject;
+    [SerializeField] GameObject timerTextObject;
     [SerializeField] GameObject playerGrid;
+    // [SerializeField] GameObject[] turnIndicators;
     [SerializeField] GameObject playerPrefab;
     [SerializeField] GameObject cardsGrid;
     [SerializeField] GameObject stocksGrid;
 
     GameManager manager;
-    Text goldText;
+    Text goldText, timerText;
     List<GameObject> playerObjects;
     List<GameObject> deckObjects;
     StockHandler stockHandler;
@@ -21,6 +23,8 @@ public class MainManager : MonoBehaviour
     void Start()
     {
         goldText = goldTextObject.GetComponent<Text>();
+        timerText = timerTextObject.GetComponent<Text>();
+        
         playerObjects = new List<GameObject>();
         deckObjects = new List<GameObject>();
 
@@ -29,6 +33,7 @@ public class MainManager : MonoBehaviour
         setGoldText(manager.getPlayer().gold);
         populatePlayers();
         updateStockInfo();
+        // updateTurnInfo();
     }
 
     public void setManager(GameManager manager)
@@ -39,6 +44,11 @@ public class MainManager : MonoBehaviour
     public void setGoldText(int gold)
     {
         goldText.text = $"$ {gold}";
+    }
+
+    public void setTimerText(int timer)
+    {
+        timerText.text = $"{timer}";
     }
 
     public void updateStockInfo()
@@ -57,6 +67,7 @@ public class MainManager : MonoBehaviour
 
             InfoHandler infoHandler = playerObject.GetComponent<InfoHandler>();
             infoHandler.setPlayer(player);
+            infoHandler.setTurn(manager.getTurnIndex());
 
             playerObjects.Add(playerObject);
         }
@@ -71,9 +82,26 @@ public class MainManager : MonoBehaviour
             InfoHandler infoHandler = playerObjects[i].GetComponent<InfoHandler>();
 
             if (infoHandler.getPlayer().id == players[i].id)
+            {
                 infoHandler.setPlayer(players[i]);
+                infoHandler.setTurn(manager.getTurnIndex());
+            }
         }
     }
+
+    // public void updateTurnInfo()
+    // {
+    //     foreach (var item in turnIndicators)
+    //         item.GetComponent<Image>().enabled = false;
+
+    //     var turn = manager.getTurnIndex();
+    //     var match = playerObjects
+    //         .Where(x => x.GetComponent<InfoHandler>().getPlayer().turn == turn)
+    //         .Select((x, index) => index);
+
+    //     if (match.Count() > 0)
+    //         turnIndicators[match.First()].GetComponent<Image>().enabled = true;
+    // }
 
     public void addCard(CardHandler handler)
     {

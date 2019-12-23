@@ -77,4 +77,10 @@ public class BidManager : MonoBehaviour
         bidButtonText.text = "Waiting other Player";
         button.GetComponent<Button>().interactable = false;
     }
+
+    public void reset()
+    {
+        bidButtonText.text = "Bid";
+        button.GetComponent<Button>().interactable = true;
+    }
 }

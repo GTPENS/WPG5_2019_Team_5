@@ -434,3 +434,9 @@ void Game::decreaseStock(const char *stock1, const char *stock2)
 		}
 	}
 }
+
+void Game::doReset(int playerId, int target)
+{
+	Data data("reset", stockList, playerList);
+	sendToAll(data, TO_ALL);
+}

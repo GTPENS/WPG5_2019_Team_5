@@ -40,6 +40,7 @@ class Game
         void doSpell(int, Spell, int);
         void increaseStock(const char *, const char *);
         void decreaseStock(const char *, const char *);
+        void doReset(int, int);
 
     private:
         int my_sock, their_sock, len, maxPlayer, turnIndex, cardIndex;

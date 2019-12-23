@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     BidManager bidManager;
     CollectManager collectManager;
     ActionManager actionManager;
+    SellManager sellManager;
 
     NetworkManager network;
     bool isServerOn, ready;
@@ -53,6 +54,9 @@ public class GameManager : MonoBehaviour
 
         actionManager = actionCanvas.GetComponent<ActionManager>();
         actionManager.setManager(this);
+
+        sellManager = sellCanvas.GetComponent<SellManager>();
+        sellManager.setManager(this);
     }
 
     public Player getPlayer()
@@ -260,6 +264,10 @@ public class GameManager : MonoBehaviour
                 mainManager.updatePlayersInfo();
                 mainManager.updateStockInfo();
                 break;
+
+            case "reset":
+                resetGame();
+                break;
         }
     }
 
@@ -272,6 +280,26 @@ public class GameManager : MonoBehaviour
         collectCanvas.SetActive(false);
         actionCanvas.SetActive(false);
         sellCanvas.SetActive(true);
+    }
+
+    public void requestReset()
+    {
+        Data data = new Data("reset");
+
+        string jsonString = JsonUtility.ToJson(data);
+        network.writeSocket(jsonString);
+    }
+
+    public void resetGame()
+    {
+        mainManager.updatePlayersInfo();
+        mainManager.updateStockInfo();
+
+        bidManager.reset();
+        bidManager.setTimer(10);
+
+        sellCanvas.SetActive(false);
+        bidCanvas.SetActive(true);
     }
 
     public void addToDeck(CardHandler handler)

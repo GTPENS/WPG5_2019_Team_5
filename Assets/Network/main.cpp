@@ -30,6 +30,10 @@ void onRequest(Game *game, char *message, int target)
 	{
 		game->doSpell(root["playerId"].asUInt(), Spell(root["spell"]), target);
 	}
+	else if (root["command"] == "reset")
+	{
+		game->doReset(root["playerId"].asUInt(), target);
+	}
 }
 
 int main(int argc, char *argv[]) 

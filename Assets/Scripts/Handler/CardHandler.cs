@@ -8,6 +8,7 @@ public class CardHandler : MonoBehaviour
     GameManager manager;
     CollectManager collectManager;
     ActionManager actionManager;
+    SellManager sellManager;
     Card card;
     bool canMove = false;
 
@@ -29,6 +30,11 @@ public class CardHandler : MonoBehaviour
     public void setActionManager(ActionManager actionManager)
     {
         this.actionManager = actionManager;
+    }
+
+    public void setSellManager(SellManager sellManager)
+    {
+        this.sellManager = sellManager;
     }
 
     public void setCardData(Card card)
@@ -71,6 +77,12 @@ public class CardHandler : MonoBehaviour
         if (actionManager != null) {
             actionManager.runSpell(card);
             actionManager.onCardDestroy(card.id);
+            Destroy(gameObject);
+        }
+
+        if (sellManager != null) {
+            sellManager.addCard(this);
+            // sellManager.onCardDestroy(card.id);
             Destroy(gameObject);
         }
     }

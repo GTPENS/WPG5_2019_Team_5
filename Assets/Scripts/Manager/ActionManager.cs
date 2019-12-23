@@ -9,11 +9,12 @@ public class ActionManager : MonoBehaviour
     [SerializeField] GameObject[] specialCards;
     [SerializeField] GameObject selectDialog;
     [SerializeField] GameObject luckyDialog;
-    [SerializeField] GameObject actionButton;
+    [SerializeField] GameObject skipButton;
     GameManager manager;
     Player player;
     List<GameObject> cardObjects;
     Coroutine coroutine;
+    DialogHandler dialogHandler;
     int timer, tempIndex;
 
     void Start()
@@ -21,7 +22,10 @@ public class ActionManager : MonoBehaviour
         player = manager.getPlayer();
         cardObjects = new List<GameObject>();
 
-        actionButton.GetComponent<Button>().onClick.AddListener(skip);
+        dialogHandler = selectDialog.GetComponentInChildren<DialogHandler>();
+        dialogHandler.setActionManager(this);
+
+        skipButton.GetComponent<Button>().onClick.AddListener(skip);
         
         showSpecialCards();
     }
@@ -38,8 +42,6 @@ public class ActionManager : MonoBehaviour
 
     void showSpecialCards()
     {
-        Debug.Log($"cardList count: {player.cardList.Count}");
-
         foreach (var card in player.cardList)
         {
             if (!card.special) continue;
@@ -83,6 +85,29 @@ public class ActionManager : MonoBehaviour
                 cardObjects.RemoveAt(i);
             }
         }
+    }
+
+    public void runSpell(Card card)
+    {
+        if (!card.special) return;
+
+        cardGrid.SetActive(false);
+        skipButton.SetActive(false);
+
+        if (card.spell == "Beruntung")
+        {
+            luckyDialog.SetActive(true);
+        }
+        else
+        {
+            dialogHandler.setSpellName(card.spell);
+            selectDialog.SetActive(true);
+        }
+    }
+
+    public void onSelected(string spellName, string stock1, string stock2)
+    {
+        manager.doSpell(spellName, stock1, stock2);
     }
 
     IEnumerator startTimer()

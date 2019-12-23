@@ -175,12 +175,11 @@ public class GameManager : MonoBehaviour
         network.writeSocket(jsonString);
     }
 
-    public void doSpell(Card card)
+    public void doSpell(string spellName, string stock1, string stock2)
     {
         Data data = new Data("spell");
         data.playerId = player.id;
-        data.cardId = card.id;
-        data.cardSpell = card.spell;
+        data.spell = new Spell(spellName, stock1, stock2);
 
         string jsonString = JsonUtility.ToJson(data);
         network.writeSocket(jsonString);

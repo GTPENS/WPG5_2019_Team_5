@@ -5,18 +5,30 @@ using UnityEngine.UI;
 
 public class DialogHandler : MonoBehaviour
 {
-    [SerializeField] GameObject selectDialog;
     [SerializeField] GameObject[] buttons;
     [SerializeField] GameObject nextButton;
-
+    
+    ActionManager actionManager;
     List<string> activeButtons;
+
+    string spellName;
 
     void Start()
     {
         activeButtons = new List<string>();
-        nextButton.GetComponent<Button>().onClick.AddListener(onNext);
+        nextButton.GetComponent<Button>().onClick.AddListener(onFinish);
 
         resetButton();
+    }
+
+    public void setActionManager(ActionManager actionManager)
+    {
+        this.actionManager = actionManager;
+    }
+
+    public void setSpellName(string spellName)
+    {
+        this.spellName = spellName;
     }
 
     public void resetButton()
@@ -27,15 +39,14 @@ public class DialogHandler : MonoBehaviour
         }
     }
 
-    void onNext()
+    void onFinish()
     {
-        onFinish();
-    }
+        if (activeButtons.Count < 2) return;
 
-    List<string> onFinish()
-    {
-        gameObject.SetActive(false);
-        return activeButtons;
+        actionManager.onSelected(this.spellName, activeButtons[0], activeButtons[1]);
+
+        var parent = gameObject.transform.parent;
+        parent.gameObject.SetActive(false);
     }
 
     public bool selectButton(string type)

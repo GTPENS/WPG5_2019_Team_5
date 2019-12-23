@@ -373,20 +373,22 @@ void Game::doSkipAction(int playerId, int target)
 	sendToAll(data, TO_ALL);
 }
 
-void Game::doSpell(int playerId, int cardId, const char *cardSpell, int target)
+void Game::doSpell(int playerId, Spell spell, int target)
 {
-	cout << "    * Player " << playerId << " => " << cardSpell << " Special Card" << endl;
+	cout << "    * Player " << playerId << " => " << spell.getName() << " Special Card" << endl;
 
-	if (strcmp(cardSpell, "Investor Plus") == 0) {
-		
+	if (strcmp(spell.getName(), "Investor Plus") == 0) {
+		cout << "    * Investor Plus" << endl;
 	}
-	else if (strcmp(cardSpell, "Investor Min") == 0) {
-		
+	else if (strcmp(spell.getName(), "Investor Min") == 0) {
+		cout << "    * Investor Min" << endl;
 	}
-	else if (strcmp(cardSpell, "Info Bursa") == 0) {
-		
+	else if (strcmp(spell.getName(), "Info Bursa") == 0) {
+		cout << "    * Info Bursa" << endl;
 	}
-	else if (strcmp(cardSpell, "Beruntung") == 0) {
+	else if (strcmp(spell.getName(), "Beruntung") == 0) {
+		cout << "    * Beruntung" << endl;
+
 		// Get two additional card
 		for (int i = 0; i < 2; i++)
 		{

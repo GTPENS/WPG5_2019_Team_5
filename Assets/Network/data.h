@@ -4,6 +4,7 @@
 #include "stock.h"
 #include "player.h"
 #include "card.h"
+#include "spell.h"
 #include <jsoncpp/json/json.h>
 
 using namespace std;
@@ -20,6 +21,7 @@ class Data
         int getTurn();
         void setTurn(int);
         void setCards(vector<Card>);
+        void setSpell(Spell);
 
         Json::Value toArray();
 
@@ -32,4 +34,5 @@ class Data
         vector<Stock> stockList;
         vector<Player> playerList;
         vector<Card> cardPool;
+        Spell spell;
 };

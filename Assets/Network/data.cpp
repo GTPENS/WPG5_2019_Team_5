@@ -9,6 +9,7 @@ Data::Data(string command, vector<Stock> stockList, vector<Player> playerList)
     this->command = command;
     this->stockList = stockList;
     this->playerList = playerList;
+    this->spell = Spell();
 
     this->playerId = 0;
     this->timer = 0;
@@ -50,6 +51,11 @@ void Data::setCards(vector<Card> cards)
     cardPool = cards;
 }
 
+void Data::setSpell(Spell spell)
+{
+    this->spell = spell;
+}
+
 Json::Value Data::toArray()
 {
     Json::Value value;
@@ -72,6 +78,8 @@ Json::Value Data::toArray()
     {
         value["cardPool"][i] = this->cardPool[i].toArray();
     }
+
+    value["spell"] = this->spell.toArray();
     
     return value;
 }

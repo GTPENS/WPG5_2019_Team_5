@@ -13,7 +13,7 @@ public class Data
     public List<Player> playerList;
     public List<Card> cardPool;
     public int cardId;
-    public string cardSpell;
+    public Spell spell;
     public int turnIndex;
 
     public Data(string command)

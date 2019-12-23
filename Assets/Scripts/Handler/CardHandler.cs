@@ -69,7 +69,8 @@ public class CardHandler : MonoBehaviour
         }
 
         if (actionManager != null) {
-            manager.doSpell(card);
+            // manager.doSpell(card);
+            actionManager.runSpell(card);
             actionManager.onCardDestroy(card.id);
             Destroy(gameObject);
         }

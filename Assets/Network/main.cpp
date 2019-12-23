@@ -28,7 +28,7 @@ void onRequest(Game *game, char *message, int target)
 	}
 	else if (root["command"] == "spell") 
 	{
-		game->doSpell(root["playerId"].asUInt(), root["cardId"].asUInt(), root["cardSpell"].asCString(), target);
+		game->doSpell(root["playerId"].asUInt(), Spell(root["spell"]), target);
 	}
 }
 

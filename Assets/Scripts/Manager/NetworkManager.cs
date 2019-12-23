@@ -14,8 +14,8 @@ public class NetworkManager : MonoBehaviour
     StreamReader theReader;
     Action<string> filterData;
 
-    string HOST = "localhost";
-    int PORT = 8080;
+    string HOST = "sepaystudio.com";
+    int PORT = 9090;
 
     public bool setupSocket() 
     {

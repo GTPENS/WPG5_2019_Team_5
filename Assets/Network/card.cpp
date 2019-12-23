@@ -55,7 +55,8 @@ bool Card::randomSpecial()
 
 char const *Card::getRandomSpell()
 {
-    char const *Spell[] = {"Investor Plus", "Investor Min", "Info Bursa", "Beruntung"};
+    // char const *Spell[] = {"Investor Plus", "Investor Min", "Info Bursa", "Beruntung"};
+    char const *Spell[] = {"Investor Plus", "Investor Min"};
     int max = sizeof(Spell) / sizeof(Spell[0]);
 
     return Spell[random(0, max - 1)];

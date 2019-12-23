@@ -18,7 +18,7 @@ int Stock::getPrice()
 
 void Stock::upPrice()
 {
-    this->price += 20;
+    this->price += 10;
 }
 
 void Stock::upPrice(int price)
@@ -28,7 +28,7 @@ void Stock::upPrice(int price)
 
 void Stock::downPrice()
 {
-    this->price -= 20;
+    this->price -= 10;
 }
 
 void Stock::downPrice(int price)

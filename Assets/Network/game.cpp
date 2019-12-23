@@ -24,7 +24,7 @@ Game::Game()
 	this->maxPlayer = 4;
 	this->turnIndex = 0;
 	this->cardIndex = 0;
-	this->stockList = { Stock("Kelautan"), Stock("Perdagangan"), Stock("Kelautan"), Stock("Keuangan") };
+	this->stockList = { Stock("Kelautan"), Stock("Perdagangan"), Stock("Pertanian"), Stock("Keuangan") };
 
 	vector<string> pool{ "Investor Plus", "Investor Min", "Info Bursa", "Beruntung" };
 
@@ -171,11 +171,6 @@ void Game::run(void (*onRequest) (Game *, char *, int))
 
 void Game::addPlayer(Player player, int target)
 {
-	if (!firstJoin) {
-		cout << "* Waiting for players to join" << endl;
-		firstJoin = true;
-	}
-
 	cout << "    * Add Player with id " << player.getId() << endl;
 	playerList.push_back(player);
 
@@ -183,10 +178,7 @@ void Game::addPlayer(Player player, int target)
 	data.setPlayerId(player.getId());
 	sendBack(data, target);
 
-	if (playerList.size() < maxPlayer) {
-		cout << "* Waiting other player" << endl;
-	}
-	else
+	if (playerList.size() >= maxPlayer)
 	{
 		cout << "* Max Player Reached, the Game Starts" << endl << endl;
 
@@ -203,11 +195,11 @@ bool compare(Bid data1, Bid data2)
 
 void Game::doBid(int playerId, int bidValue, int target)
 {
-	if (!firstBid) {
+	if (!firstJoin) {
 		cout << "* Bidding Phase" << endl;
-		firstBid = true;
+		firstJoin = true;
 	}
-	
+
 	cout << "    * Player " << playerId << " => " << bidValue << " gold" << endl;
 	bidList.push_back(Bid(playerId, bidValue));
 	
@@ -215,8 +207,6 @@ void Game::doBid(int playerId, int bidValue, int target)
 
 	if (bidList.size() != playerList.size()) 
 	{
-		cout << "* Waiting other player" << endl;
-
 		Data data("wait", stockList, playerList);
 		sendBack(data, target);
 	}
@@ -241,7 +231,7 @@ void Game::populateCards(Data *data)
 
 		if (Card::randomSpecial())
 			randomCards.push_back(Card(cardIndex, type, true, Card::getRandomSpell()));
-			// randomCards.push_back(Card(cardIndex, type, true, "Beruntung"));
+			// randomCards.push_back(Card(cardIndex, type, true, "Investor Plus"));
 		else
 			randomCards.push_back(Card(cardIndex, type));
 		
@@ -378,16 +368,15 @@ void Game::doSpell(int playerId, Spell spell, int target)
 	cout << "    * Player " << playerId << " => " << spell.getName() << " Special Card" << endl;
 
 	if (strcmp(spell.getName(), "Investor Plus") == 0) {
-		cout << "    * Investor Plus" << endl;
+		increaseStock(spell.getStock1(), spell.getStock2());
 	}
 	else if (strcmp(spell.getName(), "Investor Min") == 0) {
-		cout << "    * Investor Min" << endl;
+		decreaseStock(spell.getStock1(), spell.getStock2());
 	}
 	else if (strcmp(spell.getName(), "Info Bursa") == 0) {
-		cout << "    * Info Bursa" << endl;
+		
 	}
 	else if (strcmp(spell.getName(), "Beruntung") == 0) {
-		cout << "    * Beruntung" << endl;
 
 		// Get two additional card
 		for (int i = 0; i < 2; i++)
@@ -406,8 +395,6 @@ void Game::doSpell(int playerId, Spell spell, int target)
 
 	if (index < playerList.size()) 
 	{
-		cout << "* Waiting other player" << endl;
-
 		Data data("wait", stockList, playerList);
 		sendBack(data, target);
 	}
@@ -417,5 +404,33 @@ void Game::doSpell(int playerId, Spell spell, int target)
 
 		Data data("sell", stockList, playerList);
 		sendToAll(data, TO_ALL);
+	}
+}
+
+void Game::increaseStock(const char *stock1, const char *stock2)
+{
+	for (int i = 0; i < stockList.size(); i++)
+	{
+		string name = stockList[i].getName();
+		transform(name.begin(), name.end(), name.begin(),
+    		[](unsigned char c){ return tolower(c); });
+
+		if (name.compare(stock1) == 0 || name.compare(stock2) == 0) {
+			stockList[i].upPrice();
+		}
+	}
+}
+
+void Game::decreaseStock(const char *stock1, const char *stock2)
+{
+	for (int i = 0; i < stockList.size(); i++)
+	{
+		string name = stockList[i].getName();
+		transform(name.begin(), name.end(), name.begin(),
+    		[](unsigned char c){ return tolower(c); });
+
+		if (name.compare(stock1) == 0 || name.compare(stock2) == 0) {
+			stockList[i].downPrice();
+		}
 	}
 }

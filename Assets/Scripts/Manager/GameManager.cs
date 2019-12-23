@@ -266,6 +266,7 @@ public class GameManager : MonoBehaviour
     public void sellFunction()
     {
         mainManager.updatePlayersInfo();
+        mainManager.updateStockInfo();
         mainManager.setGridActive(true);
                 
         collectCanvas.SetActive(false);
